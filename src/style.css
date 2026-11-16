@@ -1,0 +1,15 @@
+/* Ordem dos imports preserva a aparência já aprovada no aplicativo. */
+@import './styles/foundation.css';
+@import './styles/visual-system.css';
+@import './styles/refinements.css';
+@import './styles/cardio.css';
+@import './styles/planner.css';
+@import './styles/auth.css';
+
+@import './styles/onboarding.css';
+
+@import './styles/weekly-cards.css';
+
+@import './styles/pixel-adventure.css';
+
+@import './styles/pixel-skin.css';
