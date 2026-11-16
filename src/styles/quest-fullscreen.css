@@ -71,3 +71,16 @@
 @media(max-height:660px){.quest-hud{top:5px;gap:3px}.quest-hud-level,.quest-hud-life{padding:5px 7px!important}.quest-hud-shortcuts button{min-height:26px;padding:4px 5px!important}.quest-map-navigation{bottom:25px}.quest-mission-dialog{gap:6px;padding:9px}.quest-dialog-party{min-height:62px}.quest-dialog-party img{height:60px;width:55px}.quest-dialog-exercises ol{max-height:90px}}
 @media(max-width:350px){.quest-hud{left:5px;right:5px}.quest-hud-life{flex-basis:43%}.quest-hud-shortcuts{gap:3px}.quest-hud-shortcuts button{padding:4px!important;font-size:8px}.quest-hud-progress>div:first-child{font-size:8px}.quest-dialog-party img{width:55px}.quest-map-navigation button{width:38px;flex-basis:38px}}
 @media(prefers-reduced-motion:reduce){.quest-screen .pixel-party{transition:none}}
+
+/* Corações são marcadores visuais do ciclo, não medição de bem-estar. */
+.quest-hearts{display:flex;gap:3px;font-size:16px}
+.quest-hearts span{color:#87736a;text-shadow:1px 1px #382b29}
+.quest-hearts span.filled{color:#fb8da6}
+@media(max-height:610px){
+ .quest-hud-progress>div:first-child{display:none}
+ .quest-hud-progress{padding:4px}
+ .quest-xp-track{margin-top:0}
+ .quest-hud-shortcuts button{font-size:8px}
+ .quest-map-navigation{bottom:14px}
+ .quest-map-hint{display:none}
+}
