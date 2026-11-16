@@ -1,0 +1,73 @@
+
+/* Full-bleed game screen: header and bottom tabs stay visible; no extra Home cards. */
+.pixel-game-home{height:100dvh;min-height:0;overflow:hidden}
+.pixel-game-home>header{flex:0 0 auto;min-height:51px;padding-block:9px!important}
+.pixel-game-home>main{display:flex!important;flex:1 1 auto;min-height:0;overflow:hidden!important;overflow-y:hidden!important;padding:0!important;gap:0!important;background:#3f5136!important}
+.pixel-game-home>main>.quest-screen{flex:1 1 auto}
+.pixel-game-home>footer{display:none!important}
+.pixel-game-home>.preview-badge{display:none}
+.quest-screen{position:relative;isolation:isolate;width:100%;height:100%;min-height:0;display:flex;flex-direction:column;overflow:hidden;background:#465b34}
+.quest-screen>.pixel-map-frame{flex:1 1 auto;height:100%;width:100%;min-height:0;border:0!important;padding:0!important;box-shadow:none!important;background:#4d6336}
+.quest-screen .quest-full-map{height:100%;min-height:0!important;aspect-ratio:auto!important;width:100%;border:0;background:#53683e}
+.quest-screen .pixel-map-art{background-size:cover;background-position:center 47%}
+.quest-screen .pixel-stage{z-index:8;width:clamp(64px,20%,95px)}
+.quest-screen .pixel-stage-circle{width:clamp(39px,11vw,53px);height:clamp(39px,11vw,53px);font-size:clamp(15px,4vw,19px)}
+.quest-screen .pixel-stage-name{max-width:100%;font-size:10px}
+.quest-screen .pixel-party{z-index:9;transition:left .18s steps(3),top .18s steps(3)}
+.quest-screen .pixel-map:after{z-index:11;pointer-events:none}
+.quest-hud{position:absolute;z-index:20;left:10px;right:10px;top:9px;display:flex;flex-direction:column;gap:6px;pointer-events:none}
+.quest-hud button{pointer-events:auto}
+.quest-hud-top{display:flex;align-items:stretch;gap:7px}
+.quest-hud-level,.quest-hud-life{min-width:0;background:#2f3528eb!important;color:#fff1c6!important;border:2px solid #e8c77d!important;box-shadow:3px 3px #201d20!important;padding:7px 9px!important;border-radius:2px!important;display:flex;flex-direction:column;gap:3px}
+.quest-hud-level{flex:1}
+.quest-hud-level .quest-hud-eyebrow{font:900 9px/1.1 monospace;color:#ebbb86;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.quest-hud-level strong{font:1000 clamp(17px,5.2vw,24px)/1 monospace;color:#fff5d4}
+.quest-hud-level>span:last-child{font:850 9px/1.2 monospace;color:#e3d2aa}
+.quest-hud-life{flex:0 0 42%;max-width:170px;text-align:left;cursor:pointer}
+.quest-hearts{color:#ff8ca6;letter-spacing:2px;font:950 18px/1 monospace;white-space:nowrap}
+.quest-hud-life strong{font:850 10px/1.2 monospace;color:#fff0d2;overflow-wrap:anywhere}
+.quest-hud-life small{font:800 8px/1.1 monospace;color:#edcda5}
+.quest-hud-progress{background:#2b3025da;border:2px solid #9aa96d;padding:7px 9px}
+.quest-hud-progress>div:first-child{display:flex;align-items:center;justify-content:space-between;gap:10px;color:#faf3d6;font:850 9px/1.2 monospace}
+.quest-hud-progress strong{font-weight:900}
+.quest-xp-track{width:100%;height:8px;border:1px solid #e4d7a2;background:#3f4937;margin-top:6px}
+.quest-xp-track i{height:100%;display:block;background:linear-gradient(90deg,#8bc276,#f3d36b)}
+.quest-hud-shortcuts{display:flex;gap:5px;flex-wrap:wrap}
+.quest-hud-shortcuts button{display:inline-flex;gap:4px;align-items:center;justify-content:center;padding:6px 7px!important;background:#ffecbde8!important;border:2px solid #624836!important;box-shadow:2px 2px #30282a!important;border-radius:1px!important;color:#674331!important;font:900 9px/1 monospace;min-height:29px}
+.quest-map-navigation{position:absolute;z-index:19;left:14px;right:14px;bottom:32px;display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:auto}
+.quest-map-navigation button{width:46px;height:42px;flex:0 0 46px;display:grid;place-items:center;background:#f7d58d!important;color:#563d30!important;border:3px solid #674737!important;box-shadow:3px 3px #282624!important;border-radius:2px!important;font:900 19px monospace}
+.quest-map-navigation button:disabled{opacity:.45}
+.quest-map-navigation span{background:#342c29e8;border:2px solid #a9875d;color:#fff1c3;padding:9px 8px;font:900 10px/1.15 monospace;text-align:center}
+.quest-map-hint{position:absolute;z-index:19;bottom:6px;left:0;right:0;text-align:center;margin:0;color:#fff4ce;text-shadow:1px 2px #302a23;font:900 9px monospace;letter-spacing:.2px;pointer-events:none}
+.quest-modal-backdrop{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;padding:13px;background:#151d19c9;overflow-y:auto;overscroll-behavior:contain}
+.quest-mission-dialog{width:min(100%,430px);max-height:100%;overflow-y:auto;background:#fbebc5;border:4px solid #6c4a38;box-shadow:6px 7px #161b17;color:#533e32;padding:13px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
+.quest-dialog-head{display:flex;gap:8px;justify-content:space-between;align-items:flex-start}
+.quest-dialog-head>div{min-width:0}
+.quest-dialog-head span{font:1000 10px/1.2 monospace;color:#a65d70}
+.quest-dialog-head h2{font-size:clamp(19px,5.5vw,26px)!important;margin:5px 0 0;color:#543b31;line-height:1.08;overflow-wrap:anywhere}
+.quest-dialog-close{flex:0 0 36px;width:36px;height:36px;background:#644a40!important;color:white!important;border:2px solid #3e322e!important;border-radius:1px!important;font:900 15px monospace}
+.quest-dialog-party{display:flex;align-items:center;justify-content:space-around;min-height:90px;background:#e5d3ac;border:2px solid #ab906c;padding:4px}
+.quest-dialog-party img{width:70px;height:86px;object-fit:contain;image-rendering:pixelated}
+.quest-dialog-party>div{display:flex;flex-direction:column;text-align:center;gap:3px;max-width:40%}
+.quest-dialog-party strong{font:1000 19px/1.2 monospace;color:#8e4760}
+.quest-dialog-party small{font:850 10px monospace;color:#65503f}
+.quest-dialog-exercises{background:#fff5dc;border:2px solid #ae926d;padding:9px}
+.quest-dialog-exercises>strong{font:1000 10px monospace;color:#865a44}
+.quest-dialog-exercises ol{margin:7px 0 0;padding-left:20px;max-height:135px;overflow-y:auto}
+.quest-dialog-exercises li{font:800 12px/1.4 monospace;padding:2px 0;color:#513f34}
+.quest-dialog-empty{font:850 11px/1.4 monospace;background:#fff2d1;padding:10px;border:1px solid #c6a989}
+.quest-dialog-cardio{display:flex;align-items:center;gap:8px;padding:9px;background:#d8e9c1;border:2px solid #87a477;color:#41633a;font:850 11px monospace}
+.quest-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.quest-dialog-actions button{min-width:0;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px 6px!important;border:3px solid #624031!important;box-shadow:3px 3px #8d765e!important;border-radius:1px!important;color:#fff!important;font:950 11px/1.25 monospace!important;text-align:center}
+.quest-start-strength{background:#ac5475!important}
+.quest-start-cardio{background:#4c7f5b!important}
+.quest-dialog-footer{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.quest-dialog-footer button{background:#fff1d3!important;color:#74465c!important;border:1px solid #b99174!important;padding:8px 6px!important;font:900 10px monospace!important;display:flex;align-items:center;gap:4px;min-height:34px}
+.quest-dialog-footer span{font:850 10px monospace;color:#54724d}
+.quest-dialog-feedback,.quest-dialog-demo{font:750 10px/1.4 monospace;margin:0}
+.quest-dialog-feedback{color:#675b4d}
+.quest-dialog-demo{color:#8c6b59}
+.quest-demo-advance{position:absolute;z-index:22;right:8px;bottom:106px;padding:6px 8px!important;background:#ecd6b2d9!important;color:#6d5044!important;border:2px solid #855d43!important;border-radius:1px!important;font:900 9px monospace!important}
+@media(max-height:660px){.quest-hud{top:5px;gap:3px}.quest-hud-level,.quest-hud-life{padding:5px 7px!important}.quest-hud-shortcuts button{min-height:26px;padding:4px 5px!important}.quest-map-navigation{bottom:25px}.quest-mission-dialog{gap:6px;padding:9px}.quest-dialog-party{min-height:62px}.quest-dialog-party img{height:60px;width:55px}.quest-dialog-exercises ol{max-height:90px}}
+@media(max-width:350px){.quest-hud{left:5px;right:5px}.quest-hud-life{flex-basis:43%}.quest-hud-shortcuts{gap:3px}.quest-hud-shortcuts button{padding:4px!important;font-size:8px}.quest-hud-progress>div:first-child{font-size:8px}.quest-dialog-party img{width:55px}.quest-map-navigation button{width:38px;flex-basis:38px}}
+@media(prefers-reduced-motion:reduce){.quest-screen .pixel-party{transition:none}}
