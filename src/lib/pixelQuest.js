@@ -23,3 +23,17 @@ export function questWindow(chapter,workouts,completed,simulated=0){
       completed:number<active,locked:number>active}
   })
 }
+
+/** Mission content is always derived from the saved fichas; the phase number is
+ * continuous even when a five-exercise rotation starts over. */
+export function questMission(rotation,workouts,number,currentPhase){
+ if(!Number.isInteger(number)||number<1)throw new RangeError('Fase inválida')
+ const name=questName(rotation,number)
+ const sheet=Array.isArray(workouts)?workouts.find(w=>w.name===name):null
+ const exercises=Array.isArray(sheet?.exercises)?[...sheet.exercises]:[]
+ return {
+  number,name,exercises,exerciseCount:exercises.length,
+  exists:!!sheet,completed:number<currentPhase,current:number===currentPhase,
+  locked:number>currentPhase
+ }
+}
