@@ -11,9 +11,9 @@ const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
 </script>
 <template>
   <div class="pixel-map-frame">
-    <div class="pixel-map" role="group" :aria-label="'Mapa da área '+(chapter+1)+' com cinco fases'">
+    <div class="pixel-map quest-full-map" role="group" :aria-label="'Mapa da área '+(chapter+1)+' com cinco fases'">
       <div class="pixel-map-art" aria-hidden="true"></div>
-      <div class="pixel-chapter-banner">ÁREA {{chapter+1}} · BOSQUE DO MOVIMENTO</div>
+      <slot name="hud"></slot>
       <button v-for="stage in stages" :key="stage.number" type="button"
         class="pixel-stage" :class="{
           'is-cleared':stage.completed,
@@ -35,7 +35,7 @@ const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
       </div>
       <span class="pixel-ghost-one" aria-hidden="true">✧</span>
       <span class="pixel-ghost-two" aria-hidden="true">✧</span>
-      <span class="pixel-map-bottom">O PESO VARIA. A EVOLUÇÃO CONTINUA.</span>
+      <slot name="navigation"></slot>
     </div>
   </div>
 </template>
