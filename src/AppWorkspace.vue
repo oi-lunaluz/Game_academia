@@ -56,7 +56,7 @@ const {
 </script>
 
 <template>
-<div class="app" :class="{'on-home':view==='home','brazil-app':view!=='home','pixel-preview-shell':demoMode,'pixel-app-skin':profile.homeMode!=='classic'}">
+<div class="app" :class="{'on-home':view==='home','brazil-app':view!=='home','pixel-preview-shell':demoMode,'pixel-app-skin':profile.homeMode!=='classic','pixel-game-home':view==='home'&&profile.homeMode!=='classic'}">
 <header :class="{'home-header':view==='home','brazil-header':view!=='home'}">
 <div><small class="brand-wordmark"><span class="brand-mark"><AppIcon name="dumbbell" :size="17"/></span> PEGA PESO, MULHER!</small><h1 v-if="view!=='home'">{{view==='edit'?'Minha sequência':view==='list'?'Meus treinos':view==='stats'?'Minha evolução':view==='cycle'?'Meu ciclo':view==='routine'?'Ordem dos treinos':view==='profile'?'Meu perfil':view==='done'?'Missão cumprida!':view==='session'?'Treino em ação':view==='exercise'?exercise:workoutName||'Seu treino'}}</h1></div>
 <button v-if="view!=='profile'" class="header-profile" title="Meu perfil" aria-label="Abrir meu perfil" @click="view='profile'"><AppIcon name="user" :size="21"/></button>
