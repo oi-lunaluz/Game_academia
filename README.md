@@ -1,12 +1,17 @@
-# Pega Peso, Mulher!
+# Game Academia — Pega Peso, Mulher! (versão gamificada)
 
-Aplicativo de acompanhamento de musculação, cardio e ciclo menstrual. Interface mobile-first com a mascote **Mary (CaraMary)**.
+**Este é o repositório principal de desenvolvimento da versão gamificada.** A branch `feat/pixel-adventure-home-preview` do repositório anterior foi copiada integralmente para a branch `main` daqui, incluindo código, estilos, mascotes, lógica de medalhas e testes. O projeto anterior não foi modificado.
+
+Aplicativo de acompanhamento de musculação, cardio e ciclo menstrual em Vue, com aventura em pixel art, menina de cabelo castanho, **Mary (CaraMary)** e recompensas por 5, 15, 30, 60 e 100 treinos cumpridos conforme a agenda.
+
+**Modo de demonstração:** abra `/?demo=1` ao executar o app. Ele permite navegar e editar dados fictícios sem login ou gravação no Supabase. Para o uso com contas reais, o aplicativo utiliza a autenticação e persistência configuradas no Supabase. **Este repositório novo ainda não está vinculado a um novo projeto Vercel.**
 
 ## Tecnologia e execução
 
 - Vue 3, Vite e ícones Lucide;
-- Deploy automático no Vercel a partir da branch `main`;
-- Persistência local no navegador, sem login ou sincronização.
+- Branch de desenvolvimento principal: `main` neste repositório;
+- Supabase Auth + sincronização cloud para contas reais; modo demonstração isolado com `?demo=1`;
+- A publicação Vercel precisa ser conectada a este novo repositório antes de disponibilizar sua própria URL.
 
 ```bash
 npm install
