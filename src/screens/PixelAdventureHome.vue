@@ -19,8 +19,8 @@ const chapter=ref(0)
 const missionNumber=ref(null)
 const closeButton=ref(null)
 const positions=[
-  {x:44,y:80},{x:66,y:66},{x:35,y:52},
-  {x:62,y:39},{x:44,y:25}
+  {x:44,y:80},{x:69,y:69},{x:31,y:58},
+  {x:68,y:47},{x:39,y:36}
 ]
 const stages=computed(()=>questWindow(chapter.value,workouts.value,
   completedSessions.value,simulatedWins.value).map((entry,index)=>({...entry,...positions[index]})))
@@ -34,6 +34,12 @@ const cardioMinutes=computed(()=>{
 })
 const progress=computed(()=>((currentStage.value-1)%5)/5*100)
 const nextReward=computed(()=>gamification.value.next)
+// Corazões representam apenas o progresso da agenda do ciclo, nunca saúde ou energia.
+const cycleHearts=computed(()=>{
+  const length=Math.max(1,Number(cycle.value.length)||28)
+  if(!cycle.value.enabled||!cycleDay.value)return 0
+  return Math.max(1,Math.min(4,Math.ceil(cycleDay.value/length*4)))
+})
 const cycleStatus=computed(()=>{
   if(!cycle.value.enabled)return 'Ciclo opcional'
   if(!cycle.value.start||!cycleDay.value)return 'Ciclo não registrado'
@@ -82,9 +88,9 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
               <span>Área {{chapter+1}} · Missões {{chapter*5+1}}–{{chapter*5+5}}</span>
             </div>
             <button type="button" class="quest-hud-life" @click="view='cycle'" :aria-label="'Abrir ciclo menstrual. '+cycleStatus">
-              <span class="quest-hearts" aria-hidden="true">♥ ♥ ♥</span>
+              <span class="quest-hearts" aria-hidden="true"><span v-for="n in 4" :key="n" :class="{filled:n<=cycleHearts}">♥</span></span>
               <strong>{{cycleStatus}}</strong>
-              <small>Ciclo / status</small>
+              <small>{{cycle.enabled&&cycleDay?'Andamento do ciclo':'Toque para configurar'}}</small>
             </button>
           </div>
           <div class="quest-hud-progress">
