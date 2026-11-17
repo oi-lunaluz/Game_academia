@@ -114,7 +114,7 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
           <span>ÁREA {{chapter+1}} · 5 FASES</span>
           <button type="button" aria-label="Próxima área" @click="changeArea(1)">▶</button>
         </div>
-        <p class="quest-map-hint">Toque em uma fase para escolher sua missão</p>
+        <p class="quest-map-hint">Deslize para explorar • toque na fase para abrir</p>
       </template>
     </PixelQuestMap>
 
