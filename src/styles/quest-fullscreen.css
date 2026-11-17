@@ -339,3 +339,30 @@
 .quest-cycle-understand{padding:12px!important;background:#5d9067!important;border:2px solid #3c6745!important;color:white!important;border-radius:2px!important;font:950 12px monospace!important}
 .quest-cycle-open{padding:8px!important;background:transparent!important;color:#82516b!important;font:850 11px monospace!important}
 @media(max-width:350px){.quest-hud-cycle{flex-basis:43%}.quest-hud-cycle .quest-hud-life{padding-right:27px!important}.quest-cycle-help{width:23px!important;height:23px!important;min-width:23px!important;right:3px;top:4px}}
+
+
+/* Navegação entre grupos de 5 fases: controle menor e compacto. */
+.quest-map-navigation{
+  left:50%!important;right:auto!important;
+  width:max-content!important;max-width:calc(100% - 24px);
+  transform:translateX(-50%);
+  justify-content:center!important;gap:5px!important;
+}
+.quest-map-navigation button{
+  width:36px!important;height:36px!important;flex:0 0 36px!important;
+  min-width:36px!important;min-height:36px!important;
+  font-size:14px!important;border-width:2px!important;
+  box-shadow:2px 2px #282624!important;
+}
+.quest-map-navigation span{
+  padding:7px 9px!important;
+  font-size:9px!important;line-height:1.1!important;
+  white-space:nowrap;
+}
+@media(max-width:350px){
+  .quest-map-navigation button{
+    width:34px!important;height:34px!important;
+    min-width:34px!important;min-height:34px!important;flex-basis:34px!important
+  }
+  .quest-map-navigation span{font-size:8px!important;padding:7px!important}
+}
