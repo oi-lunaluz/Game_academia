@@ -68,7 +68,7 @@ const {
 <div v-else-if="syncStatus==='saving'" class="cloud-sync-indicator" role="status">Salvando na nuvem...</div>
 <div v-if="demoMode" class="preview-badge" role="status">PRÉVIA EXPERIMENTAL · sem login e sem salvamento</div>
 <main>
-<PixelSceneHeader v-if="view!=='home'&&view!=='stats'&&profile.homeMode!=='classic'" :view="view==='routine'?'list':view" :name="workoutName"/>
+<PixelSceneHeader v-if="view!=='home'&&view!=='stats'&&view!=='cycle'&&profile.homeMode!=='classic'" :view="view==='routine'?'list':view" :name="workoutName"/>
 <HomeScreen v-if="view==='home'"/>
 
 <ProgressScreen v-else-if="view==='stats'"/>
