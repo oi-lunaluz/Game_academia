@@ -87,3 +87,26 @@ test('premiações novas são encontradas sem repetir as anteriores',()=>{
  const after=calc([entry('10/11/2026'),entry('11/11/2026'),entry('12/11/2026')])
  assert.deepEqual(newlyUnlocked(before,after).map(x=>x.id),['streak_3'])
 })
+
+
+test('medalhas por tempo usam horas reais e não minutos fictícios de check rápido',()=>{
+ const history=[
+  {...entry('17/11/2026','cardio'),seconds:3600},
+  {...entry('17/11/2026','forca'),seconds:7200},
+  {...entry('17/11/2026','forca'),seconds:0,quick:true}
+ ]
+ const r=calc(history)
+ assert.equal(r.hours,3)
+ assert.ok(r.hoursRewards.some(x=>x.id==='hours_1'&&x.tier==='Rosa'))
+ assert.equal(r.hoursRewards.some(x=>x.id==='hours_5'),false)
+ assert.equal(r.total,1)
+})
+test('cinco horas acumuladas destravam bronze sem precisar de dias consecutivos',()=>{
+ const history=[
+  {...entry('01/11/2026'),seconds:10800},
+  {...entry('17/11/2026','cardio'),seconds:7200}
+ ]
+ const r=calc(history)
+ assert.ok(r.hoursRewards.some(x=>x.id==='hours_5'&&x.tier==='Bronze'))
+ assert.equal(r.current,1)
+})
