@@ -96,7 +96,13 @@ function clampPeriod(){
         <button type="button" aria-label="Mês anterior" @click="moveCycleMonth(-1)">‹</button>
         <h3>{{calendarMonthName}}</h3>
         <button type="button" aria-label="Próximo mês" @click="moveCycleMonth(1)">›</button>
-        <button v-if="!editing" type="button" class="cycle-edit-pencil" aria-label="Editar registros da menstruação" title="Editar calendário" @click="beginEdit"><AppIcon name="pencil" :size="18"/></button>
+        <button v-if="editing" type="button" class="cycle-edit-cancel-top" aria-label="Cancelar edição do calendário" title="Cancelar" @click="cancelEdit"><AppIcon name="close" :size="17"/></button>
+        <button type="button" class="cycle-edit-pencil" :class="{'is-save':editing}"
+          :aria-label="editing?'Salvar alterações da menstruação':'Editar registros da menstruação'"
+          :title="editing?'Salvar alterações':'Editar calendário'"
+          @click="editing?saveEdit():beginEdit()">
+          <AppIcon :name="editing?'check':'pencil'" :size="19"/>
+        </button>
       </div>
       <div class="cycle-calendar-grid">
         <span v-for="(weekday,i) in ['D','S','T','Q','Q','S','S']" :key="'wd'+i" class="cycle-weekday">{{weekday}}</span>
@@ -145,11 +151,7 @@ function clampPeriod(){
         </button>
       </div>
       <p class="cycle-calendar-hint" v-if="!editing">Para marcar ou corrigir as <strong>datas da menstruação</strong>, toque no <strong>lápis ✎</strong>. Fora da edição, tocar nas datas não altera seus registros.</p>
-      <p v-else class="cycle-calendar-hint"><strong>Modo edição:</strong> toque no primeiro dia da menstruação para marcar ou no dia rosa para desmarcar. Confira e pressione <strong>Salvar</strong>.</p>
-      <div v-if="editing" class="cycle-edit-actions">
-        <button type="button" class="cycle-edit-cancel" @click="cancelEdit">Cancelar</button>
-        <button type="button" class="cycle-edit-save" @click="saveEdit"><AppIcon name="check" :size="17"/> Salvar alterações</button>
-      </div>
+      <p v-else class="cycle-calendar-hint"><strong>Modo edição:</strong> toque no primeiro dia da menstruação para marcar ou no dia rosa para desmarcar. Confira e toque no <strong>✓ no canto superior direito</strong> para salvar, ou no X para cancelar.</p>
       <p v-if="feedback" class="cycle-feedback" role="status">{{feedback}}</p>
     </section>
 
