@@ -11,7 +11,7 @@ const {
 const phaseModal=ref(null)
 const editing=ref(false)
 const draft=ref(null)
-const visibleCycle=computed(()=>editing.value&&draft.value?draft.value:cycle.value)
+const visibleCycle=computed(()=>editing.value&&draft.value?{...draft.value,length:cycle.value.length,period:cycle.value.period}:cycle.value)
 const visibleCycleInfo=computed(()=>editing.value?getCycleDayInfo(visibleCycle.value,dateKey(new Date())):cycleDayInfo.value)
 const visibleDays=computed(()=>cycleCalendar(visibleCycle.value,cycleCalendarMonth.value,cycleCalendarYear.value,dateKey(new Date())))
 function beginEdit(){
@@ -27,10 +27,6 @@ function cancelEdit(){
 function saveEdit(){
   if(!editing.value||!draft.value)return
   const pending=draft.value
-  pending.length=Math.max(15,Math.min(60,Math.round(Number(pending.length)||28)))
-  pending.period=Math.max(1,Math.min(15,Math.round(Number(pending.period)||5)))
-  cycle.value.length=pending.length
-  cycle.value.period=pending.period
   cycle.value.periodStarts=[...(pending.periodStarts||[])]
   cycle.value.start=pending.start||''
   cycle.value.enabled=true
@@ -77,10 +73,10 @@ function removeStart(day){
 }
 const dateLabel=day=>new Date(day+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})
 function clampCycle(){
-  if(editing.value)draft.value.length=Math.max(15,Math.min(60,Math.round(Number(draft.value.length)||28)))
+  cycle.value.length=Math.max(15,Math.min(60,Math.round(Number(cycle.value.length)||28)))
 }
 function clampPeriod(){
-  if(editing.value)draft.value.period=Math.max(1,Math.min(15,Math.round(Number(draft.value.period)||5)))
+  cycle.value.period=Math.max(1,Math.min(15,Math.round(Number(cycle.value.period)||5)))
 }
 </script>
 
@@ -148,7 +144,7 @@ function clampPeriod(){
           <AppIcon name="help" :size="13"/>
         </button>
       </div>
-      <p class="cycle-calendar-hint" v-if="!editing">Para registrar ou corrigir sua menstruação, toque no <strong>lápis ✎</strong> no canto do calendário. Fora da edição, tocar nas datas não altera seus registros.</p>
+      <p class="cycle-calendar-hint" v-if="!editing">Para marcar ou corrigir as <strong>datas da menstruação</strong>, toque no <strong>lápis ✎</strong>. Fora da edição, tocar nas datas não altera seus registros.</p>
       <p v-else class="cycle-calendar-hint"><strong>Modo edição:</strong> toque no primeiro dia da menstruação para marcar ou no dia rosa para desmarcar. Confira e pressione <strong>Salvar</strong>.</p>
       <div v-if="editing" class="cycle-edit-actions">
         <button type="button" class="cycle-edit-cancel" @click="cancelEdit">Cancelar</button>
@@ -178,14 +174,14 @@ function clampPeriod(){
     <section class="cycle-settings">
       <div class="cycle-settings-title">
         <AppIcon name="calendar" :size="19"/>
-        <div><strong>Como é seu ciclo?</strong><small>Use o lápis do calendário para ajustar.</small></div>
+        <div><strong>Como é seu ciclo?</strong><small>Altere a duração quando quiser, sem usar o lápis.</small></div>
       </div>
       <div class="cycle-two-inputs">
         <label>Ciclo costuma durar
-          <span><input type="number" inputmode="numeric" min="15" max="60" v-if="editing" v-model.number="draft.length" @change="clampCycle"/><strong v-else>{{cycle.length}}</strong> dias</span>
+          <span><input type="number" inputmode="numeric" min="15" max="60" v-model.number="cycle.length" @change="clampCycle"/> dias</span>
         </label>
         <label>Menstruação dura
-          <span><input type="number" inputmode="numeric" min="1" max="15" v-if="editing" v-model.number="draft.period" @change="clampPeriod"/><strong v-else>{{cycle.period}}</strong> dias</span>
+          <span><input type="number" inputmode="numeric" min="1" max="15" v-model.number="cycle.period" @change="clampPeriod"/> dias</span>
         </label>
       </div>
       <p>A contagem do ciclo começa no primeiro dia da menstruação. Os outros dias rosados usam a duração informada por você.</p>
