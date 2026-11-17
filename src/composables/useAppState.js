@@ -309,12 +309,10 @@ export function useAppState({accountId,accountName,initialCloud=null,cloudRevisi
   const profile=ref({nickname:accountName||'',goal:'Ganhar força e massa muscular',...(initialCloud?.profile||(demoMode?{}:readJson(profileKey,{})))})
   if(!demoMode)watch(profile,value=>writeJson(profileKey,value),{deep:true})
   
-  // Rewards derive from the logged strength sessions and saved training days.
-  // They are not incremented by navigation, cardio or fake game victories.
+  // The daily streak and load awards read recorded sessions only.
+  // They do not modify the workout rotation, its sets, or quest phases.
   const gamification=computed(()=>calculateStreak({
-    history:state.value.history,scheduledDays:state.value.scheduledDays,
-    scheduleTimeline:state.value.scheduleTimeline,
-    scheduleAnchor:state.value.scheduleAnchor,now:calendarNow.value
+    history:state.value.history,now:calendarNow.value
   }))
   const rewardPopup=ref(null)
   const rewardIsPreview=ref(false)
@@ -330,7 +328,12 @@ export function useAppState({accountId,accountName,initialCloud=null,cloudRevisi
     const former=new Set((before||'').split(',').filter(Boolean))
     const unlocked=gamification.value.unlocked.filter(r=>!former.has(r.id))
     if(unlocked.length){
-      rewardPopup.value=unlocked.at(-1)
+      // If multiple thresholds are crossed in one session, congratulate the
+      // most valuable new load milestone while the shelf keeps all awards.
+      rewardPopup.value=[...unlocked].sort((a,b)=>
+        (a.category==='load'?1:0)-(b.category==='load'?1:0)||
+        (Number(a.threshold)||0)-(Number(b.threshold)||0)
+      ).at(-1)
       rewardIsPreview.value=false
     }
   })
