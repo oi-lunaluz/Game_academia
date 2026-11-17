@@ -7,10 +7,11 @@ const subtitle=computed(()=>{
  const r=props.reward
  if(r.category==='load')
    return r.exercise+' · '+(r.id?.startsWith('double_')?'Dobrou a carga inicial':r.threshold+' kg alcançados')
+ if(r.category==='duration')return r.threshold+' horas de treino registradas'
  if(r.category==='time')return r.threshold+' dias de treino ao longo da jornada'
  return r.threshold+' dias de ofensiva'
 })
-const iconName=computed(()=>props.reward.category==='load'?'dumbbell':props.reward.category==='time'?'calendarCheck':'flame')
+const iconName=computed(()=>props.reward.category==='load'?'dumbbell':props.reward.category==='duration'?'timer':props.reward.category==='time'?'calendarCheck':'flame')
 </script>
 <template>
  <div class="pixel-reward-backdrop" @click.self="$emit('close')">
