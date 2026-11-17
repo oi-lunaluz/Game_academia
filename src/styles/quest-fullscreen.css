@@ -84,3 +84,49 @@
  .quest-map-navigation{bottom:14px}
  .quest-map-hint{display:none}
 }
+
+/* Mapa oficial: cenário de plataformas criado para esta aventura.
+   Cada marcador corresponde à superfície de um salto na arte. */
+.quest-screen .pixel-map-art{
+  background-image:url('/quest-platforms.webp')!important;
+  background-size:100% 100%!important;
+  background-position:center center!important;
+  image-rendering:auto!important;
+}
+.quest-screen .pixel-stage-circle{
+  border-radius:50%;
+  border:3px solid #45372c!important;
+  box-shadow:0 3px 0 #342b27,0 0 0 2px #ffe3a3a3!important;
+  background:#f8dd82!important;
+  color:#614131!important;
+  width:clamp(38px,11vw,49px);
+  height:clamp(38px,11vw,49px);
+}
+.quest-screen .pixel-stage.is-cleared .pixel-stage-circle{
+  background:#a5d778!important;color:#304e31!important;
+}
+.quest-screen .pixel-stage.is-locked .pixel-stage-circle{
+  background:#c8c3a3!important;color:#675b4c!important;
+}
+.quest-screen .pixel-stage-name{
+  border:2px solid #40382a!important;
+  background:#f6eac4f0!important;
+  color:#4e392f!important;
+  font:950 10px/1.1 monospace!important;
+  max-width:92px;
+  border-radius:2px;
+  text-shadow:none!important;
+}
+.quest-screen .pixel-stage.is-active .pixel-stage-circle{
+  animation:questPlatformPulse 1.8s steps(2,end) infinite;
+}
+.quest-screen .pixel-party{
+  transform:translate(-50%,-125%)!important;
+  filter:drop-shadow(2px 3px 0 #2c332855)!important;
+}
+@keyframes questPlatformPulse{
+  50%{box-shadow:0 3px 0 #342b27,0 0 0 7px #fff6c3ae!important}
+}
+@media(prefers-reduced-motion:reduce){
+  .quest-screen .pixel-stage.is-active .pixel-stage-circle{animation:none}
+}
