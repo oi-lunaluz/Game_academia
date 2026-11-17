@@ -18,9 +18,10 @@ const currentStage=computed(()=>questPhase(completedSessions.value,simulatedWins
 const chapter=ref(0)
 const missionNumber=ref(null)
 const closeButton=ref(null)
+// Cada plataforma da ilustração é um salto/fase, de baixo para cima.
 const positions=[
-  {x:44,y:80},{x:69,y:69},{x:31,y:58},
-  {x:68,y:47},{x:39,y:36}
+  {x:17,y:74},{x:42,y:63},{x:54,y:54},
+  {x:68,y:45},{x:83,y:36}
 ]
 const stages=computed(()=>questWindow(chapter.value,workouts.value,
   completedSessions.value,simulatedWins.value).map((entry,index)=>({...entry,...positions[index]})))
