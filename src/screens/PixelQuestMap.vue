@@ -12,8 +12,10 @@ const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
 <template>
   <div class="pixel-map-frame">
     <div class="pixel-map quest-full-map" role="group" :aria-label="'Mapa da área '+(chapter+1)+' com cinco fases'">
-      <div class="pixel-map-art" aria-hidden="true"></div>
-      <slot name="hud"></slot>
+      <div class="quest-platform-canvas">
+        <img class="quest-platform-image" src="/quest-castle-platforms.webp"
+          alt="" aria-hidden="true" draggable="false"/>
+
       <button v-for="stage in stages" :key="stage.number" type="button"
         class="pixel-stage" :class="{
           'is-cleared':stage.completed,
@@ -33,8 +35,8 @@ const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
         <img class="pixel-party-girl" src="/pixel-hero-girl.svg" alt="Menina de cabelo castanho avançando no mapa"/>
         <img class="pixel-party-mary" src="/pixel-caramary.svg" alt="CaraMary acompanha a aventureira"/>
       </div>
-      <span class="pixel-ghost-one" aria-hidden="true">✧</span>
-      <span class="pixel-ghost-two" aria-hidden="true">✧</span>
+      </div>
+      <slot name="hud"></slot>
       <slot name="navigation"></slot>
     </div>
   </div>
