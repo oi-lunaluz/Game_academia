@@ -146,8 +146,8 @@
 }
 .quest-platform-canvas{
   position:absolute;z-index:6;
-  width:min(100%, calc(100dvh - 245px));
-  max-height:calc(100% - 175px);
+  width:min(100%, calc(100dvh - 285px));
+  max-height:none;
   aspect-ratio:1/1;
   left:50%;top:52%;
   transform:translate(-50%,-50%);
@@ -179,10 +179,10 @@
 .quest-platform-canvas .pixel-party-mary{width:52%;height:72%}
 .quest-platform-canvas .pixel-stage:focus-visible{outline-offset:2px}
 @media(max-height:680px){
-  .quest-platform-canvas{top:53%;width:min(100%,calc(100dvh - 225px));max-height:calc(100% - 154px)}
+  .quest-platform-canvas{top:53%;width:min(100%,calc(100dvh - 280px));max-height:none}
   .quest-platform-canvas .pixel-party{width:58px;height:58px}
   .quest-platform-canvas .pixel-stage-circle{width:31px;height:31px;font-size:14px}
 }
 @media(min-width:600px){
-  .quest-platform-canvas{width:min(100%,calc(100dvh - 245px));max-height:calc(100% - 175px)}
+  .quest-platform-canvas{width:min(100%,calc(100dvh - 285px));max-height:none}
 }
