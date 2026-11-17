@@ -54,15 +54,15 @@ const loadCount=computed(()=>g.value?.exerciseProgress?.length||0)
     </div>
 
     <div class="journey-award-group">
-      <div class="journey-award-heading"><AppIcon name="calendarCheck" :size="18"/><div><strong>Tempo de jornada</strong><small>Total de dias treinados, mesmo após recomeços</small></div></div>
+      <div class="journey-award-heading"><AppIcon name="calendarCheck" :size="18"/><div><strong>Tempo de jornada</strong><small>{{Math.floor(g.hours||0)}} h cronometradas · {{g.total}} dias registrados</small></div></div>
       <div v-if="time.length" class="pixel-medal-grid">
         <button v-for="r in (compact?time.slice(-3):time)" :key="r.id" type="button"
           class="pixel-medal-card" :class="'journey-tier-'+r.tier.toLowerCase()" @click="previewReward(r)">
-          <span class="pixel-medal-art"><AppIcon name="calendarCheck" :size="25"/></span>
-          <strong>{{r.title}}</strong><small>{{r.threshold}} dias · {{r.tier}}</small>
+          <span class="pixel-medal-art"><AppIcon :name="r.category==='duration'?'timer':'calendarCheck'" :size="25"/></span>
+          <strong>{{r.title}}</strong><small>{{r.threshold}} {{r.category==='duration'?'horas':'dias'}} · {{r.tier}}</small>
         </button>
       </div>
-      <p v-else class="journey-empty">Registre seus primeiros 7 dias de atividade para ganhar esta medalha.</p>
+      <p v-else class="journey-empty">Registre seus primeiros dias ou sua primeira hora de treino cronometrado para ganhar uma medalha.</p>
     </div>
 
     <div class="journey-award-group">
@@ -80,7 +80,7 @@ const loadCount=computed(()=>g.value?.exerciseProgress?.length||0)
       <p v-if="loadCount&&!compact" class="journey-weight-guide">{{loadCount}} {{loadCount===1?'exercício acompanhado':'exercícios acompanhados'}} com cargas registradas.</p>
     </div>
 
-    <p class="pixel-reward-rule">A ofensiva considera dias com musculação, cardio ou check de treino; no máximo um dia inteiro pode ficar sem registro. Após dois dias inteiros de ausência, ela reinicia no dia 1. Nenhuma ficha, fase, carga ou medalha já registrada é apagada. Cargas contam apenas em séries detalhadas.</p>
+    <p class="pixel-reward-rule">A ofensiva conta um dia por data com treino ou check registrado; um dia de pausa é permitido. Após dois dias completos sem registro, ela recomeça no dia 1. As fases, fichas e medalhas permanecem. Medalhas de horas usam duração real, e as de peso usam séries detalhadas.</p>
     <button v-if="compact" type="button" class="pixel-reward-more" @click="view='stats'">Ver todas as medalhas</button>
     <div v-if="demoMode" class="pixel-reward-demo">
       <small>TESTAR VISUAL DAS MEDALHAS</small>
