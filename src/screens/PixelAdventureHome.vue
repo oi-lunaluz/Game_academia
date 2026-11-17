@@ -4,11 +4,13 @@ import AppIcon from '../AppIcon.vue'
 import PixelQuestMap from './PixelQuestMap.vue'
 import { questPhase, questChapter, questWindow, questMission } from '../lib/pixelQuest.js'
 import { strengthNames } from '../lib/weeklyCards.js'
+import { CYCLE_PHASES, phaseForCycleDate } from '../lib/cycleTracking.js'
+import { dateKey } from '../lib/planner.js'
 
 const {
   state,view,profile,demoMode,openWorkout,openCreateModal,openCardioModal,
   start,weeklyStrengthCards,toggleStrengthCard,quickFeedback,
-  weeklyCardio,cycle,cycleDay,gamification
+  weeklyCardio,cycle,cycleDay,cycleDayInfo,gamification
 }=inject('pegaPesoApp')
 
 const workouts=computed(()=>strengthNames(state.value))
@@ -41,9 +43,15 @@ const cycleHearts=computed(()=>{
   return Math.max(1,Math.min(4,Math.ceil(cycleDay.value/length*4)))
 })
 const cycleStatus=computed(()=>{
-  if(!cycle.value.enabled)return 'Ciclo opcional'
-  if(!cycle.value.start||!cycleDay.value)return 'Ciclo não registrado'
+  if(!cycleDayInfo.value.last||!cycleDay.value)return 'Registrar ciclo'
   return 'Dia '+cycleDay.value+' do ciclo'
+})
+const phaseModal=ref(false)
+const currentCyclePhase=computed(()=>{
+  void cycleDayInfo.value
+  const today=dateKey(new Date())
+  const phase=phaseForCycleDate(cycle.value,today,today)
+  return phase?CYCLE_PHASES[phase]:null
 })
 watch(currentStage,stage=>{chapter.value=questChapter(stage);missionNumber.value=null},{immediate:true})
 watch(completedSessions,(now,before)=>{if(now!==before)simulatedWins.value=0})
@@ -87,11 +95,16 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
               <strong>FASE {{currentStage}}</strong>
               <span>Área {{chapter+1}} · Missões {{chapter*5+1}}–{{chapter*5+5}}</span>
             </div>
-            <button type="button" class="quest-hud-life" @click="view='cycle'" :aria-label="'Abrir ciclo menstrual. '+cycleStatus">
-              <span class="quest-hearts" aria-hidden="true"><span v-for="n in 4" :key="n" :class="{filled:n<=cycleHearts}">♥</span></span>
-              <strong>{{cycleStatus}}</strong>
-              <small>{{cycle.enabled&&cycleDay?'Andamento do ciclo':'Toque para configurar'}}</small>
-            </button>
+            <div class="quest-hud-cycle" aria-label="Resumo do ciclo menstrual">
+              <button type="button" class="quest-hud-life" @click="view='cycle'" :aria-label="'Abrir calendário menstrual. '+cycleStatus">
+                <span class="quest-hearts" aria-hidden="true"><span v-for="n in 4" :key="n" :class="{filled:n<=cycleHearts}">♥</span></span>
+                <strong>{{cycleStatus}}</strong>
+                <small>{{currentCyclePhase?currentCyclePhase.title+' · estimada':'Toque para registrar'}}</small>
+              </button>
+              <button v-if="currentCyclePhase" type="button" class="quest-cycle-help" :aria-label="'O que posso sentir na '+currentCyclePhase.title+'?'" title="Entenda esta fase" @click="phaseModal=true">
+                <AppIcon name="help" :size="15"/>
+              </button>
+            </div>
           </div>
           <div class="quest-hud-shortcuts">
             <button type="button" @click="view='stats'"><AppIcon name="flame" :size="15"/> {{gamification.current?'🔥 Dia '+gamification.day:'🔥 Dia 1 · recomeçar'}}</button>
@@ -108,6 +121,21 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
         <p class="quest-map-hint">Deslize para explorar • toque na fase para abrir</p>
       </template>
     </PixelQuestMap>
+
+    <div v-if="phaseModal&&currentCyclePhase" class="quest-modal-backdrop quest-cycle-backdrop" @click.self="phaseModal=false">
+      <section class="quest-cycle-dialog" role="dialog" aria-modal="true" aria-labelledby="quest-cycle-title">
+        <div class="quest-cycle-dialog-head">
+          <span>🌷 SEU CICLO E SEUS TREINOS</span>
+          <button type="button" aria-label="Fechar explicação" @click="phaseModal=false"><AppIcon name="close" :size="18"/></button>
+        </div>
+        <h2 id="quest-cycle-title">{{currentCyclePhase.title}}</h2>
+        <p class="quest-cycle-day-label">{{cycleStatus}} · fase estimada</p>
+        <p>{{currentCyclePhase.description}}</p>
+        <p class="quest-cycle-disclaimer">Cada corpo responde de forma diferente. O ciclo não determina sua força nem suas cargas automaticamente, e a fase mostrada é apenas uma estimativa.</p>
+        <button class="quest-cycle-understand" type="button" @click="phaseModal=false">Entendi!</button>
+        <button class="quest-cycle-open" type="button" @click="phaseModal=false;view='cycle'">Abrir calendário do ciclo</button>
+      </section>
+    </div>
 
     <div v-if="mission" class="quest-modal-backdrop" @click.self="closeMission">
       <section class="quest-mission-dialog" role="dialog" aria-modal="true" :aria-label="'Missão da fase '+mission.number">
