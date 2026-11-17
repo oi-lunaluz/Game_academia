@@ -1,0 +1,200 @@
+/* Trilha vertical inspirada na navegação por lições de jogos.
+   O caminho é interface SVG/CSS, não uma imagem ampliada do castelo. */
+.quest-screen .duo-trail-map {
+  height:100%;
+  min-height:0!important;
+  overflow:hidden!important;
+  image-rendering:auto!important;
+  background:
+    radial-gradient(ellipse at 6% 30%,#e4fad4 0 16%,transparent 17%),
+    radial-gradient(ellipse at 105% 56%,#c9eecf 0 19%,transparent 20%),
+    linear-gradient(180deg,#a6e5ed 0%,#c7f2df 27%,#d8f3c4 67%,#a7d9b1 100%)!important;
+}
+.quest-screen .duo-trail-map::before,
+.quest-screen .duo-trail-map::after {
+  display:none!important;
+}
+.duo-trail-scroll{
+  position:absolute;
+  inset:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#89bfa4 transparent;
+  padding:146px 0 96px;
+  scroll-padding-top:160px;
+  -webkit-overflow-scrolling:touch;
+  z-index:4;
+}
+.duo-trail-scroll:focus-visible{outline:3px solid #7557a8;outline-offset:-5px}
+.duo-trail-world{
+  position:relative;
+  width:min(100%,430px);
+  height:790px;
+  margin:0 auto;
+  isolation:isolate;
+}
+.duo-world-scenery,.duo-trail-path{
+  display:block;
+  position:absolute;
+  inset:0;
+  width:100%;height:100%;
+  pointer-events:none;
+}
+.duo-world-scenery{z-index:0}
+.duo-trail-path{z-index:1;overflow:visible}
+.duo-trail-path path{fill:none;stroke-linecap:round;stroke-linejoin:round}
+.duo-trail-path-shadow{
+  stroke:#507b65;stroke-width:53;
+  filter:drop-shadow(0 7px 0 #59866a66);
+}
+.duo-trail-path-road{stroke:#f5eac3;stroke-width:42}
+.duo-trail-path-dash{stroke:#fffaf0;stroke-width:3;stroke-dasharray:3 16;opacity:.8}
+.duo-trail-area-label{
+  position:absolute;z-index:2;
+  top:0;left:50%;transform:translateX(-50%);
+  width:max-content;max-width:94%;
+  padding:9px 13px;
+  background:#fff6d9;
+  border:2px solid #8cb696;border-radius:18px;
+  color:#3d7955;
+  font:950 11px/1.2 monospace;
+  letter-spacing:.4px;
+  box-shadow:0 4px #88b4a0;
+}
+.duo-trail-area-label span{font-size:9px;color:#879a79}
+.quest-screen .duo-trail-node{
+  position:absolute;
+  z-index:7;
+  transform:translate(-50%,-50%);
+  display:flex;
+  align-items:center;flex-direction:column;gap:7px;
+  min-width:100px;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  color:#445c46;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.duo-trail-node-disc{
+  display:grid;place-items:center;
+  height:77px;width:77px;
+  border-radius:50%;
+  background:#c6a6d9;
+  border:4px solid #765d9b;
+  box-shadow:0 8px #81649f,0 11px 0 1px #385d45aa,0 0 0 4px #f9fbe7;
+  transition:transform .16s ease,box-shadow .16s ease;
+}
+.duo-trail-node-face{
+  width:61px;height:61px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  color:#fffdf9;
+  font:1000 28px/1 monospace;
+  background:linear-gradient(160deg,#bcb0e1,#a28ac6);
+  box-shadow:inset 0 3px #ded7f099;
+}
+.quest-screen .duo-trail-node.is-cleared .duo-trail-node-disc{
+  background:#90d97b;border-color:#438b54;
+  box-shadow:0 8px #4a9d57,0 11px 0 1px #385d45aa,0 0 0 4px #e8f9cd;
+}
+.quest-screen .duo-trail-node.is-cleared .duo-trail-node-face{
+  background:linear-gradient(155deg,#a9e895,#65c374);
+}
+.quest-screen .duo-trail-node.is-active .duo-trail-node-disc{
+  background:#ffdd67;border-color:#c58b3a;
+  box-shadow:0 8px #d8a24b,0 11px 0 1px #385d45aa,0 0 0 6px #fff7c8,0 0 19px 10px #fff0a4b8;
+}
+.quest-screen .duo-trail-node.is-active .duo-trail-node-face{
+  background:linear-gradient(150deg,#ffef9b,#ffd264);
+  color:#9b612f;
+}
+.quest-screen .duo-trail-node.is-future .duo-trail-node-disc{
+  background:#b8b4cf;border-color:#8782a8;
+  box-shadow:0 8px #9391b5,0 11px 0 1px #385d45aa,0 0 0 4px #ebebef;
+}
+.quest-screen .duo-trail-node.is-future .duo-trail-node-face{
+  background:linear-gradient(150deg,#d4d2e3,#bcb8d4);color:#797490;
+}
+.quest-screen .duo-trail-node:active .duo-trail-node-disc{transform:translateY(4px);box-shadow:0 4px #81649f,0 7px 0 1px #385d45aa}
+.quest-screen .duo-trail-node:focus-visible{outline:3px solid #52478c;outline-offset:10px;border-radius:24px}
+.duo-now-label{
+  position:absolute;
+  bottom:calc(100% + 15px);
+  left:50%;transform:translateX(-50%);
+  padding:7px 10px;
+  white-space:nowrap;
+  border-radius:13px;background:#fff3d0;
+  color:#955a44;font:1000 10px/1 monospace;
+  border:2px solid #cb996c;
+  box-shadow:0 3px #c1a282;
+}
+.duo-now-label::after{content:"";position:absolute;bottom:-7px;left:calc(50% - 5px);border-left:5px solid transparent;border-right:5px solid transparent;border-top:7px solid #cb996c}
+.duo-trail-stage-name{
+  padding:6px 9px;
+  max-width:132px;
+  border:2px solid #a0b79c;
+  border-radius:13px;
+  background:#fffaf0f2;
+  color:#597052;
+  font:900 10px/1.22 monospace;
+  box-shadow:0 3px #b6c9ac;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.quest-screen .duo-trail-node.is-active .duo-trail-stage-name{border-color:#cfab6f;color:#8e6339}
+.quest-screen .duo-trail-node.is-future .duo-trail-stage-name{opacity:.8}
+.duo-trail-characters{
+  position:absolute;
+  z-index:6;
+  display:flex;align-items:flex-end;
+  width:83px;height:91px;
+  transform:translate(-50%,-47%);
+  pointer-events:none;
+  filter:drop-shadow(1px 4px 1px #35584277);
+}
+.duo-trail-characters img{
+  display:block;object-fit:contain;
+  image-rendering:pixelated;
+}
+.duo-trail-characters img:first-child{width:45%;height:91%}
+.duo-trail-characters img:last-child{width:61%;height:62%;margin-left:-9px}
+.duo-trail-end{
+  position:absolute;
+  bottom:3%;left:50%;transform:translateX(-50%);
+  white-space:nowrap;
+  font:900 10px monospace;
+  color:#548d6d;
+  background:#e3f4d3;
+  border:2px dashed #8fb895;
+  padding:9px;
+  border-radius:9px;
+}
+.duo-trail-map .quest-hud{
+  z-index:20;
+  background:linear-gradient(180deg,#d8f5e7fa 0%,#d8f5e7e9 88%,#d8f5e700 100%);
+  left:0;right:0;top:0;
+  padding:9px 10px 14px;
+}
+.duo-trail-map .quest-map-navigation{
+  z-index:21;
+  bottom:14px;
+  border-radius:20px;
+}
+.duo-trail-map .quest-map-hint{
+  display:none!important;
+}
+@media(max-height:680px){
+  .duo-trail-scroll{padding-top:130px;padding-bottom:84px}
+  .duo-trail-map .quest-hud{padding-top:5px}
+}
+@media(max-width:350px){
+  .duo-trail-node-disc{height:68px;width:68px}
+  .duo-trail-node-face{height:53px;width:53px}
+  .duo-trail-characters{width:67px;height:78px}
+  .duo-trail-stage-name{max-width:115px;font-size:9px}
+}
+@media(prefers-reduced-motion:reduce){
+  .duo-trail-node-disc{transition:none}
+}
