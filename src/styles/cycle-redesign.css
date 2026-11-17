@@ -134,3 +134,29 @@
 .cycle-phase-popup .cycle-phase-popup-disclaimer{font:750 10px/1.55 monospace;color:#8e7469}
 .cycle-phase-popup-close{background:#548d67!important;border:2px solid #376b4d!important;border-radius:3px!important;color:#fff!important;font:950 12px monospace!important;padding:13px!important}
 @media(max-width:355px){.cycle-phase-chip{font-size:9px!important;gap:5px;padding:6px!important}.cycle-phase-selector{gap:5px}}
+
+
+/* Edição protegida: nenhuma data é modificada fora do modo lápis. */
+.cycle-month-bar h3{flex:1;min-width:0}
+.cycle-month-bar{gap:6px}
+.cycle-month-bar .cycle-edit-pencil{
+  width:39px;min-width:39px;height:39px;flex:0 0 39px;
+  display:grid;place-items:center;padding:0!important;
+  background:#dfecdb!important;border:2px solid #77a57e!important;
+  color:#36734a!important;border-radius:4px!important
+}
+.cycle-day:not(.is-editing){cursor:default!important}
+.cycle-day.is-editing:not(:disabled){cursor:pointer!important}
+.cycle-day.is-editing:not(:disabled):active{transform:scale(.94)}
+.cycle-edit-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:8px;margin-top:13px}
+.cycle-edit-actions button{display:flex;justify-content:center;align-items:center;gap:6px;min-width:0;min-height:43px;padding:11px 8px!important;font:900 12px/1.2 monospace!important;border-radius:4px!important}
+.cycle-edit-cancel{background:#f2dfd9!important;color:#735247!important;border:2px solid #bfa29a!important}
+.cycle-edit-save{background:#538963!important;color:#fff!important;border:2px solid #336444!important}
+.cycle-settings label span strong{display:inline-block;padding:9px 10px;min-width:47px;background:#fff7eb;border:1px solid #d3bda5;font:900 14px monospace;color:#745247;text-align:center;border-radius:3px}
+.cycle-edit-pencil:focus-visible,.cycle-edit-actions button:focus-visible{outline:3px solid #6b4ab1;outline-offset:2px}
+@media(max-width:350px){
+ .cycle-month-bar{gap:3px}
+ .cycle-month-bar button,.cycle-month-bar .cycle-edit-pencil{width:35px;min-width:35px;flex-basis:35px;height:35px}
+ .cycle-month-bar h3{font-size:13px!important}
+ .cycle-edit-actions button{font-size:10px!important}
+}
