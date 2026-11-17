@@ -94,7 +94,7 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
             </button>
           </div>
           <div class="quest-hud-shortcuts">
-            <button type="button" @click="view='stats'"><AppIcon name="trophy" :size="15"/> {{gamification.current}} em sequência</button>
+            <button type="button" @click="view='stats'"><AppIcon name="flame" :size="15"/> {{gamification.current?'🔥 Dia '+gamification.day:'🔥 Dia 1 · recomeçar'}}</button>
             <button type="button" @click="startCardio"><AppIcon name="timer" :size="15"/> {{weeklyCardio}}/{{state.cardioGoal||0}} min cardio</button>
           </div>
         </div>
