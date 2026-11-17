@@ -2,6 +2,7 @@
 import { computed, inject, ref } from 'vue'
 import AppIcon from '../AppIcon.vue'
 import { CYCLE_PHASES, phaseForCycleDate } from '../lib/cycleTracking.js'
+import { dateKey } from '../lib/planner.js'
 const {
   cycle,cycleDay,cycleDayInfo,recordPeriodDay,
   moveCycleMonth,calendarMonthName,cycleCalendarDays,
@@ -9,7 +10,12 @@ const {
 }=inject('pegaPesoApp')
 const phaseModal=ref(null)
 const phaseOrder=['menstrual','follicular','ovulatory','luteal']
-const currentPhase=computed(()=>phaseForCycleDate(cycle.value,new Date().toLocaleDateString('en-CA'),new Date().toLocaleDateString('en-CA')))
+const currentPhase=computed(()=>{
+  // Depend on the existing cycle-day value so the label refreshes with the clock.
+  void cycleDayInfo.value
+  const today=dateKey(new Date())
+  return phaseForCycleDate(cycle.value,today,today)
+})
 const currentPhaseInfo=computed(()=>currentPhase.value?CYCLE_PHASES[currentPhase.value]:null)
 function showPhase(phase){if(CYCLE_PHASES[phase])phaseModal.value=CYCLE_PHASES[phase]}
 function closePhase(){phaseModal.value=null}
