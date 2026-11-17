@@ -54,20 +54,28 @@ export function loadAchievements(history=[],now=new Date()) {
   for(const {h,day} of entries) {
     for(const [exercise,sets] of Object.entries(h.sets||{})) {
       if(!exercise.trim()||!Array.isArray(sets))continue
-      for(const set of sets) {
-        const kg=Number(set?.kg)
-        const reps=Number(set?.reps)
-        if(!Number.isFinite(kg)||kg<=0||kg>2000||!Number.isFinite(reps)||reps<=0)continue
-        const old=byExercise.get(exercise)
-        if(!old)byExercise.set(exercise,{exercise,firstKg:kg,maxKg:kg,firstDate:dateKey(day)})
-        else old.maxKg=Math.max(old.maxKg,kg)
+      // Baseline is the HEAVIEST valid set in the very first session,
+      // not its light warm-up set. Doubling must happen in a later session.
+      const sessionWeights=sets.map(set=>({
+        kg:Number(set?.kg),reps:Number(set?.reps)
+      })).filter(set=>Number.isFinite(set.kg)&&set.kg>0&&set.kg<=2000&&Number.isFinite(set.reps)&&set.reps>0)
+      if(!sessionWeights.length)continue
+      const sessionMax=Math.max(...sessionWeights.map(set=>set.kg))
+      const old=byExercise.get(exercise)
+      if(!old)byExercise.set(exercise,{
+        exercise,firstKg:sessionMax,maxKg:sessionMax,
+        firstDate:dateKey(day),doubledLater:false
+      })
+      else {
+        old.maxKg=Math.max(old.maxKg,sessionMax)
+        if(sessionMax>=2*old.firstKg)old.doubledLater=true
       }
     }
   }
   const rewards=[]
   for(const item of byExercise.values()) {
     const id=encodeURIComponent(item.exercise)
-    if(item.maxKg>=2*item.firstKg)
+    if(item.doubledLater)
       rewards.push({
         id:'double_'+id,category:'load',tier:'Rosa',title:'Força em Dobro',
         exercise:item.exercise,threshold:2*item.firstKg,loadKg:item.maxKg,
