@@ -6,8 +6,8 @@ import PixelRewardShelf from './PixelRewardShelf.vue'
 const {
   view,
   selectedStat, selectedWorkoutStat, workoutStatNames,
-  statsSessions, allExercises, bestExercise, maxLoad,
-  totalVolume, completedSessions, onWorkoutStatChange,
+  statsSessions, allExercises, bestExercise,
+  completedSessions, onWorkoutStatChange,
   chartWeeks, chartMax, gamification
 }=inject('pegaPesoApp')
 
@@ -15,19 +15,25 @@ const tab=ref('overview')
 const historyOpen=ref(false)
 const seriesOpen=ref(false)
 const hasVolume=computed(()=>chartWeeks.value.some(week=>week.value>0))
+const recordedSeries=computed(()=>statsSessions.value.flatMap(h=>
+  Object.values(h.sets||{}).flat().filter(row=>row&&typeof row==='object')
+))
+const workoutVolume=computed(()=>recordedSeries.value.reduce((total,set)=>
+  total+(Number(set.kg)||0)*(Number(set.reps)||0),0))
+const heaviestLoad=computed(()=>Math.max(0,...recordedSeries.value.map(s=>Number(s.kg)||0)))
 const recentSessions=computed(()=>[...statsSessions.value].reverse().slice(0,8))
 const latestSeries=computed(()=>[...bestExercise.value].reverse().slice(0,8))
 const totalWorkouts=computed(()=>statsSessions.value.filter(h=>h.kind==='forca').length)
 const totalCardio=computed(()=>statsSessions.value.filter(h=>h.kind==='cardio').length)
 const bestByExercise=computed(()=>{
   const result=new Map()
-  for(const set of bestExercise.value){
+  for(const set of bestExercise.value.filter(s=>s.kg>0)){
     if(!result.has(set.name)||result.get(set.name).kg<set.kg)
       result.set(set.name,{name:set.name,kg:set.kg,reps:set.reps,date:set.date})
   }
   return [...result.values()].sort((a,b)=>b.kg-a.kg).slice(0,4)
 })
-const allTimeLoadLabel=computed(()=>maxLoad.value>0?`${maxLoad.value} kg`:'—')
+const allTimeLoadLabel=computed(()=>heaviestLoad.value>0?`${heaviestLoad.value} kg`:'—')
 function openHistory(){tab.value='overview';historyOpen.value=!historyOpen}
 </script>
 
@@ -110,7 +116,7 @@ function openHistory(){tab.value='overview';historyOpen.value=!historyOpen}
         </div>
         <div class="evolution-chart-summary">
           <span>Volume total registrado</span>
-          <strong>{{totalVolume.toLocaleString('pt-BR')}} kg</strong>
+          <strong>{{workoutVolume.toLocaleString('pt-BR')}} kg</strong>
         </div>
         <small class="evolution-caption">O volume é uma medida de atividade registrada, não uma pontuação de força ou resultado físico.</small>
       </section>
