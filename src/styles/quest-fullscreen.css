@@ -125,7 +125,7 @@
   filter:drop-shadow(2px 3px 0 #2c332855)!important;
 }
 @keyframes questPlatformPulse{
-  50%{box-shadow:0 3px 0 #342b27,0 0 0 7px #fff6c3ae!important}
+  50%{transform:scale(1.08);filter:brightness(1.13)}
 }
 @media(prefers-reduced-motion:reduce){
   .quest-screen .pixel-stage.is-active .pixel-stage-circle{animation:none}
