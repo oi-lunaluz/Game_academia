@@ -69,7 +69,7 @@ onBeforeUnmount(()=>{observer?.disconnect();observer=null})
       role="group" :aria-label="'Mapa do castelo, área '+(chapter+1)+' com cinco plataformas de treino. Deslize para os lados para explorar.'"
       @pointerdown="beginPan" @pointermove="movePan"
       @pointerup="endPan" @pointercancel="endPan">
-      <div class="quest-platform-canvas" :style="worldStyle">
+      <div class="quest-platform-canvas" :class="{'is-dragging':isDragging}" :style="worldStyle">
         <img class="quest-platform-image" src="/quest-castle-hd.webp"
           alt="" aria-hidden="true" draggable="false"/>
         <svg class="quest-jump-trail" viewBox="0 0 1000 1000" aria-hidden="true">
