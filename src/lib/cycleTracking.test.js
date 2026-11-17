@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import {cycleStarts,togglePeriodStart,cycleDayInfo,cycleCalendar} from './cycleTracking.js'
+import {cycleStarts,togglePeriodStart,cycleDayInfo,cycleCalendar,phaseForCycleDate,CYCLE_PHASES} from './cycleTracking.js'
 
 const today='2026-11-17'
 test('um toque registra a data inicial e pinta a duração configurada',()=>{
@@ -39,4 +39,34 @@ test('valores inválidos de duração têm padrões seguros, sem dias de fertili
   const d=cycleCalendar({start:'2026-11-12',period:0,length:0},10,2026,today)
   assert.equal(d.filter(x=>x.recorded).length,5)
   assert.ok(d.every(x=>!['fertile','ovulation'].includes(x.phase)))
+})
+
+test('calendário mostra as quatro fases depois do primeiro registro',()=>{
+ const cycle={start:'2026-11-01',periodStarts:['2026-11-01'],length:28,period:5}
+ assert.equal(phaseForCycleDate(cycle,'2026-11-02',today),'menstrual')
+ assert.equal(phaseForCycleDate(cycle,'2026-11-08',today),'follicular')
+ assert.equal(phaseForCycleDate(cycle,'2026-11-14',today),'ovulatory')
+ assert.equal(phaseForCycleDate(cycle,'2026-11-20',today),'luteal')
+ const all=cycleCalendar(cycle,10,2026,today)
+ assert.equal(all.find(day=>day.date==='2026-11-02').phase,'menstrual')
+ assert.equal(all.find(day=>day.date==='2026-11-08').phase,'follicular')
+ assert.equal(all.find(day=>day.date==='2026-11-14').phase,'ovulatory')
+ assert.equal(all.find(day=>day.date==='2026-11-20').phase,'luteal')
+})
+test('nenhuma fase é calculada antes de registrar início de menstruação',()=>{
+ assert.equal(phaseForCycleDate({},'2026-11-17',today),null)
+ assert.ok(Object.values(CYCLE_PHASES).every(item=>item.title&&item.description))
+})
+test('um novo registro real reinicia a contagem das fases naquele dia',()=>{
+ const cycle={start:'2026-11-15',periodStarts:['2026-10-15','2026-11-15'],length:28,period:5}
+ assert.equal(phaseForCycleDate(cycle,'2026-11-16',today),'menstrual')
+ assert.equal(phaseForCycleDate(cycle,'2026-11-10',today),'menstrual')
+})
+test('a data menstruação registrada prevalece sobre fase estimada',()=>{
+ const cycle={start:'2026-11-01',periodStarts:['2026-11-01'],length:28,period:5}
+ const all=cycleCalendar(cycle,10,2026,today)
+ const recorded=all.find(day=>day.date==='2026-11-02')
+ assert.equal(recorded.recorded,true)
+ assert.equal(recorded.phase,'menstrual')
+ assert.equal(recorded.predicted,false)
 })
