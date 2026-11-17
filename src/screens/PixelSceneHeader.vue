@@ -21,9 +21,9 @@ const item=computed(()=>themes[props.view]||themes.workout)
     <h2>{{view==='workout'&&name?name:item[1]}}</h2>
     <p>{{item[2]}}</p>
   </div>
-  <div class="pixel-scene-characters"  :aria-label="view==='list'?'A aventureira em pixel art':'A aventureira e CaraMary juntas'">
+  <div class="pixel-scene-characters"  aria-label="A aventureira e CaraMary juntas">
     <img class="pixel-scene-girl" src="/pixel-hero-girl.svg" alt="Menina de cabelo castanho em pixel art"/>
-    <img v-if="view!=='list'" class="pixel-scene-mary" src="/pixel-caramary.svg" alt="CaraMary, a cachorrinha caramelo em pixel art"/>
+    <img class="pixel-scene-mary" src="/pixel-caramary.svg" alt="CaraMary, a cachorrinha caramelo em pixel art"/>
   </div>
 </section>
 </template>
