@@ -15,14 +15,6 @@ const showHistory=ref(false)
 
 <template>
   <div class="training-hub">
-    <div class="training-hub-intro">
-      <div>
-        <span class="eyebrow">SEU CANTINHO DE TREINO</span>
-        <h2>Meus treinos</h2>
-        <p>Treine, marque o que fez e organize tudo aqui, sem trocar de aba.</p>
-      </div>
-    </div>
-
     <WeeklyWorkoutCards/>
 
     <button type="button" class="brazil-primary training-create" @click="openCreateModal">
