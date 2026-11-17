@@ -15,6 +15,12 @@ export const TIME_REWARDS = Object.freeze([
   {id:'time_90',threshold:90,title:'Veterana da Aventura',tier:'Prata',category:'time',description:'Noventa dias de treino registrados ao longo da jornada.'},
   {id:'time_180',threshold:180,title:'Lenda do Movimento',tier:'Ouro',category:'time',description:'Cento e oitenta dias de treino registrados ao longo da jornada.'}
 ])
+export const HOURS_REWARDS = Object.freeze([
+  {id:'hours_1',threshold:1,title:'Primeira Hora',tier:'Rosa',category:'duration',description:'Uma hora de treinos cronometrados acumulada na jornada.'},
+  {id:'hours_5',threshold:5,title:'Cinco Horas de Força',tier:'Bronze',category:'duration',description:'Cinco horas de treino registradas, somando musculação e cardio.'},
+  {id:'hours_20',threshold:20,title:'Guerreira do Tempo',tier:'Prata',category:'duration',description:'Vinte horas de dedicação registradas em treinos.'},
+  {id:'hours_50',threshold:50,title:'Relógio de Ouro',tier:'Ouro',category:'duration',description:'Cinquenta horas de treino registradas ao longo da sua jornada.'}
+])
 export const LOAD_MILESTONES = Object.freeze([
   {kg:10,tier:'Rosa',label:'Primeira Força'},
   {kg:25,tier:'Bronze',label:'Força de Bronze'},
@@ -22,7 +28,6 @@ export const LOAD_MILESTONES = Object.freeze([
   {kg:100,tier:'Ouro',label:'Medalha de Ouro'}
 ])
 
-const dayOrdinal=key=>Math.floor(fromDateKey(key).getTime()/86400000)
 // UTC day ordinals avoid DST across local calendar dates.
 const ordinal=key=>{
   const d=fromDateKey(key)
@@ -104,7 +109,15 @@ export function calculateStreak({history=[],now=new Date()}={}) {
   const current=expired?0:run
   const allTime=dates.length
   const streakRewards=REWARDS.filter(r=>best>=r.threshold)
-  const timeRewards=TIME_REWARDS.filter(r=>allTime>=r.threshold)
+  const totalSeconds=(Array.isArray(history)?history:[]).reduce((sum,h)=>{
+    const day=fromBrazilDate(h?.date)
+    if(!day||dateKey(day)>today||(h.kind!=='forca'&&h.kind!=='cardio'))return sum
+    return sum+Math.max(0,Math.min(Number(h.seconds)||0,86400))
+  },0)
+  const hours=totalSeconds/3600
+  const dayRewards=TIME_REWARDS.filter(r=>allTime>=r.threshold)
+  const hoursRewards=HOURS_REWARDS.filter(r=>hours>=r.threshold)
+  const timeRewards=[...dayRewards,...hoursRewards]
   const loads=loadAchievements(history,now)
   const unlocked=[...streakRewards,...timeRewards,...loads.rewards]
   const next=REWARDS.find(r=>best<r.threshold)||null
@@ -112,7 +125,8 @@ export function calculateStreak({history=[],now=new Date()}={}) {
     current,best,total:allTime,qualified:allTime,missedDays:missed,
     day:current||1,expired,hasActivity:!!dates.length,lastWorkoutDate:last,
     unlocked,next,remaining:next?Math.max(0,next.threshold-current):0,
-    streakRewards,timeRewards,loadRewards:loads.rewards,exerciseProgress:loads.exercises,
+    streakRewards,timeRewards,dayRewards,hoursRewards,hours,
+    loadRewards:loads.rewards,exerciseProgress:loads.exercises,
     hasSchedule:true
   }
 }
