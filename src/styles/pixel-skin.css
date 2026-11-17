@@ -88,3 +88,32 @@
 .pixel-reward-popup button{width:100%;padding:13px!important;background:#a15371!important;color:#fff!important;border:3px solid #6c3850!important;font:950 12px monospace;border-radius:2px!important}
 @media(max-width:365px){.pixel-scene-header{min-height:130px;padding:10px}.pixel-scene-characters{height:108px}.pixel-scene-girl{height:100px}.pixel-scene-mary{height:80px}.pixel-medal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.pixel-reward-track i{transition:none}}
+
+
+/* Treinos e rotina reunidos numa única aba */
+.bottom-nav{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.training-hub{display:flex;flex-direction:column;gap:13px;padding-bottom:12px}
+.training-hub-intro{padding:15px 16px;background:#f5dea8;border:2px solid #a27b54;box-shadow:3px 3px #d9b992}
+.training-hub-intro .eyebrow{font:900 10px monospace;color:#9c5364}
+.training-hub-intro h2{margin:5px 0;font-size:24px;color:#62412f}
+.training-hub-intro p{margin:0;font-size:12px;line-height:1.5;color:#81604a}
+.training-hub .week-cards-shell{margin:0}
+.training-hub .training-create{width:100%;display:flex;align-items:center;justify-content:center;gap:8px}
+.training-simple-card{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;background:#eef1d6;border:2px solid #9cab7d;padding:13px;box-shadow:3px 3px #d5d8b4;border-radius:3px}
+.training-simple-heading{display:flex;align-items:center;gap:10px;min-width:0}
+.training-simple-heading>div{display:flex;flex-direction:column;gap:4px}
+.training-simple-heading strong{font-size:15px;color:#4c613e}
+.training-simple-heading small{font-size:11px;color:#687b55}
+.training-cardio-button{background:#5e875c!important;border:2px solid #3e603e!important;color:#fff!important;border-radius:3px!important;padding:10px 13px!important;font-size:12px!important}
+.training-disclosure{padding:0!important;background:#fff3d6;border:2px solid #b39269;box-shadow:3px 3px #e1c79c;border-radius:3px!important;overflow:hidden}
+.training-disclosure-toggle{display:flex;align-items:center;gap:11px;width:100%;padding:15px!important;border:0!important;border-radius:0!important;background:#fff3d6!important;color:#654938!important;text-align:left}
+.training-disclosure-toggle>span{flex:1;min-width:0;font-size:13px;font-weight:900}
+.training-disclosure-toggle>span small{display:block;margin-top:4px;font-size:10px;color:#8e745b}
+.training-disclosure-content{display:flex;flex-direction:column;gap:12px;padding:0 13px 14px}
+.training-disclosure-content>p{margin:0;font-size:11px;line-height:1.5;color:#8e715a}
+.training-disclosure-content .brazil-list{display:flex;flex-direction:column;gap:8px}
+.training-secondary-action{padding:11px!important;background:#f1dec3!important;border:1px solid #aa8764!important;color:#794a57!important;border-radius:3px!important;font-size:12px!important}
+.training-history-total{margin:0;font-size:11px;color:#776150}
+.training-disclosure-content .week-settings{margin:0!important}
+.training-disclosure-content .week-settings-toggle{font-size:12px!important}
+@media(max-width:370px){.training-cardio-button{width:100%}.training-simple-card{align-items:stretch}}
