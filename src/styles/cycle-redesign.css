@@ -160,3 +160,19 @@
  .cycle-month-bar h3{font-size:13px!important}
  .cycle-edit-actions button{font-size:10px!important}
 }
+
+
+/* Botões de salvar/cancelar sempre visíveis no topo do calendário. */
+.cycle-month-bar .cycle-edit-pencil.is-save{
+  background:#538963!important;border-color:#336444!important;color:#fff!important
+}
+.cycle-month-bar .cycle-edit-cancel-top{
+  display:grid;place-items:center;
+  width:35px;min-width:35px;height:39px;
+  padding:0!important;flex:0 0 35px;
+  background:#f2dfd9!important;color:#735247!important;
+  border:2px solid #bfa29a!important;border-radius:4px!important;
+}
+@media(max-width:350px){
+  .cycle-month-bar .cycle-edit-cancel-top{width:31px;min-width:31px;flex-basis:31px;height:35px}
+}
