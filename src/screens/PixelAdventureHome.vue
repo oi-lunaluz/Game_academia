@@ -19,9 +19,10 @@ const chapter=ref(0)
 const missionNumber=ref(null)
 const closeButton=ref(null)
 // Cada plataforma da ilustração é um salto/fase, de baixo para cima.
+// Cinco plataformas reais da imagem, da entrada inferior até o castelo.
 const positions=[
-  {x:17,y:74},{x:42,y:63},{x:54,y:54},
-  {x:68,y:45},{x:83,y:36}
+  {x:15,y:87},{x:53,y:87},{x:61,y:68},
+  {x:86,y:34},{x:67,y:16}
 ]
 const stages=computed(()=>questWindow(chapter.value,workouts.value,
   completedSessions.value,simulatedWins.value).map((entry,index)=>({...entry,...positions[index]})))
