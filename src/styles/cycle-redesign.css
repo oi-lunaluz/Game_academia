@@ -83,3 +83,54 @@
 .cycle-privacy svg{flex:0 0 15px}
 @media(max-width:350px){.cycle-calendar-grid{gap:3px}.cycle-day{min-height:30px;font-size:12px!important}.cycle-overview{gap:5px}.cycle-overview-item{padding:9px 5px}.cycle-overview-item strong{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.cycle-day{transition:none}}
+
+
+/* Fases do ciclo no próprio calendário: rosa confirmado, estimativas suaves,
+   halo verde em HOJE e cartão verde para a fase atual. */
+.cycle-day.phase-menstrual:not(.is-recorded):not(.is-estimate){background:#fae0e9!important;color:#9b5b78!important}
+.cycle-day.phase-follicular:not(.is-recorded){background:#d8f0dc!important;border-color:#a3cdaa!important;color:#356749!important}
+.cycle-day.phase-ovulatory:not(.is-recorded){background:#faedb9!important;border-color:#ddca85!important;color:#756026!important}
+.cycle-day.phase-luteal:not(.is-recorded){background:#e9e0f6!important;border-color:#c8b1e1!important;color:#6d568a!important}
+.cycle-day.is-estimate{background:#ffe6ef!important;border:2px dashed #d695b1!important;color:#ab698b!important}
+.cycle-day.is-recorded,.cycle-day.is-recorded.phase-menstrual{
+  background:#e98bb0!important;border:2px solid #b25a7c!important;color:#fff!important
+}
+.cycle-day.is-start{background:#be527f!important;border-color:#8a3d5a!important;color:#fff!important}
+.cycle-day.phase-current{
+  outline:3px solid #338b57!important;
+  outline-offset:1px;
+  box-shadow:0 0 0 3px #dcf9dd!important;
+}
+.cycle-current-phase{display:flex;align-items:center;gap:10px;margin-top:14px;padding:10px 11px;border:2px solid #619872;background:#dff1d9;box-shadow:2px 2px #bfd9bf}
+.cycle-current-phase-icon{display:grid;place-items:center;width:36px;height:36px;background:#bfe3bd;color:#367a50;border:1px solid #76aa80;flex:0 0 36px}
+.cycle-current-phase-text{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.cycle-current-phase-text small{font:900 9px/1.2 monospace;color:#457354;letter-spacing:.3px}
+.cycle-current-phase-text strong{font:950 14px/1.25 monospace;color:#285b42}
+.cycle-phase-help{display:grid;place-items:center;flex:0 0 38px;width:38px;height:38px;padding:5px!important;background:#f5fff2!important;border:2px solid #70a17a!important;border-radius:50%!important;color:#3c7754!important}
+.cycle-phase-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:12px}
+.cycle-phase-chip{display:flex;align-items:center;gap:7px;min-height:41px;min-width:0;padding:7px 8px!important;border:1px solid #c2a996!important;border-radius:5px!important;background:#f5eadf!important;color:#725947!important;text-align:left;font:850 10px/1.2 monospace!important;box-shadow:none!important}
+.cycle-phase-chip>span:nth-child(2){flex:1;min-width:0}
+.cycle-phase-chip .cycle-phase-swatch{display:block;width:13px;height:13px;flex:0 0 13px;border:2px solid #9e677e;border-radius:50%;background:#f3b7ce}
+.cycle-phase-chip.phase-follicular .cycle-phase-swatch{background:#b5e3bc;border-color:#65a779}
+.cycle-phase-chip.phase-ovulatory .cycle-phase-swatch{background:#f2df9a;border-color:#caa94b}
+.cycle-phase-chip.phase-luteal .cycle-phase-swatch{background:#d9c8ef;border-color:#9b7ac7}
+.cycle-phase-chip.selected{border:2px solid #3b8957!important;background:#e2f3df!important;color:#336648!important;padding:6px 7px!important}
+.cycle-phase-chip svg{flex:0 0 13px;color:#8d7566}
+.cycle-phase-chip.selected svg{color:#33724a}
+.cycle-phase-backdrop{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:18px;background:#19221dbb}
+.cycle-phase-popup{width:min(100%,420px);max-height:88dvh;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:#fff6e8;border:4px solid #a78e75;box-shadow:6px 7px #282522}
+.cycle-phase-popup-top{display:flex;align-items:center;gap:9px}
+.cycle-phase-popup-top>span:nth-child(2){font:900 10px monospace;color:#97705c;letter-spacing:.5px;flex:1}
+.cycle-phase-popup-dot{width:20px;height:20px;background:#efadca;border:3px solid #b57691;border-radius:50%}
+.cycle-phase-popup.phase-follicular .cycle-phase-popup-dot{background:#b8e3bc;border-color:#74a980}
+.cycle-phase-popup.phase-ovulatory .cycle-phase-popup-dot{background:#f0e2a3;border-color:#c6aa60}
+.cycle-phase-popup.phase-luteal .cycle-phase-popup-dot{background:#d9c5ed;border-color:#a58abc}
+.cycle-phase-popup-top button{display:grid;place-items:center;padding:4px!important;width:36px;height:36px;border-radius:3px!important;color:#76584b!important;background:#f0dec6!important}
+.cycle-phase-popup h2{font:950 23px/1.15 monospace!important;color:#6f4b5c;margin:2px 0 0}
+.cycle-phase-popup>p{font:760 12px/1.65 monospace;color:#795e56;margin:0}
+.cycle-phase-popup-note{display:flex;align-items:flex-start;gap:10px;padding:12px;background:#e4f1de;border-left:4px solid #72a079;color:#496b4c}
+.cycle-phase-popup-note svg{flex:0 0 19px;margin-top:2px}
+.cycle-phase-popup-note span{font:750 11px/1.6 monospace}
+.cycle-phase-popup .cycle-phase-popup-disclaimer{font:750 10px/1.55 monospace;color:#8e7469}
+.cycle-phase-popup-close{background:#548d67!important;border:2px solid #376b4d!important;border-radius:3px!important;color:#fff!important;font:950 12px monospace!important;padding:13px!important}
+@media(max-width:355px){.cycle-phase-chip{font-size:9px!important;gap:5px;padding:6px!important}.cycle-phase-selector{gap:5px}}
