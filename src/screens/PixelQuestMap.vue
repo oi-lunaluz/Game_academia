@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 const props=defineProps({
   stages:{type:Array,required:true},
@@ -10,6 +10,10 @@ const emit=defineEmits(['select'])
 const viewport=ref(null)
 const dimensions=ref({width:360,height:600})
 let observer=null
+const manualLeft=ref(null)
+const isDragging=ref(false)
+let panStartX=0
+let panStartLeft=0
 const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
 const focusNode=computed(()=>activeNode.value||props.stages[0]||{x:50,y:50})
 
@@ -20,7 +24,8 @@ const world=computed(()=>{
   const top=height<590?88:108
   const size=Math.max(width,Math.min(height-top-62,width*1.7))
   const focus=focusNode.value.x/100*size
-  const left=Math.min(0,Math.max(width-size,width/2-focus))
+  const automaticLeft=Math.min(0,Math.max(width-size,width/2-focus))
+  const left=manualLeft.value===null?automaticLeft:Math.min(0,Math.max(width-size,manualLeft.value))
   return {width:size,height:size,left,top}
 })
 const worldStyle=computed(()=>({
@@ -29,6 +34,19 @@ const worldStyle=computed(()=>({
   left:world.value.left+'px',
   top:world.value.top+'px'
 }))
+watch(()=>[props.chapter,props.selectedNumber],()=>{manualLeft.value=null})
+function beginPan(event){
+  if(event.target.closest('button'))return
+  isDragging.value=true
+  panStartX=event.clientX
+  panStartLeft=world.value.left
+  event.currentTarget.setPointerCapture?.(event.pointerId)
+}
+function movePan(event){
+  if(!isDragging.value)return
+  manualLeft.value=panStartLeft+event.clientX-panStartX
+}
+function endPan(){isDragging.value=false}
 function resize(){
   if(!viewport.value)return
   const bounds=viewport.value.getBoundingClientRect()
@@ -48,7 +66,9 @@ onBeforeUnmount(()=>{observer?.disconnect();observer=null})
 <template>
   <div class="pixel-map-frame">
     <div ref="viewport" class="pixel-map quest-full-map quest-world-viewport"
-      role="group" :aria-label="'Mapa do castelo, área '+(chapter+1)+' com cinco plataformas de treino'">
+      role="group" :aria-label="'Mapa do castelo, área '+(chapter+1)+' com cinco plataformas de treino. Deslize para os lados para explorar.'"
+      @pointerdown="beginPan" @pointermove="movePan"
+      @pointerup="endPan" @pointercancel="endPan">
       <div class="quest-platform-canvas" :style="worldStyle">
         <img class="quest-platform-image" src="/quest-castle-hd.webp"
           alt="" aria-hidden="true" draggable="false"/>
