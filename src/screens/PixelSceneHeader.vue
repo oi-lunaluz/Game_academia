@@ -2,7 +2,7 @@
 import {computed} from 'vue'
 const props=defineProps({view:{type:String,required:true},name:{type:String,default:''}})
 const themes={
- list:['CENTRAL DE MISSÕES','Escolha seu desafio','Cadastra, organiza e entra na sua próxima ficha.'],
+ list:['MEUS TREINOS','Sua aventura','Escolha sua próxima missão.'],
  workout:['FICHA DA AVENTUREIRA','Prepare a missão','Edite os movimentos e acompanhe seus recordes.'],
  routine:['MAPA DA ROTINA','Seu plano de jogo','Ajuste a ordem das fichas, os dias e seu cardio.'],
  stats:['LIVRO DE CONQUISTAS','Sua evolução','Recordes, medalhas e passos da sua jornada.'],
@@ -21,9 +21,9 @@ const item=computed(()=>themes[props.view]||themes.workout)
     <h2>{{view==='workout'&&name?name:item[1]}}</h2>
     <p>{{item[2]}}</p>
   </div>
-  <div class="pixel-scene-characters" aria-label="A aventureira e CaraMary juntas">
+  <div class="pixel-scene-characters"  :aria-label="view==='list'?'A aventureira em pixel art':'A aventureira e CaraMary juntas'">
     <img class="pixel-scene-girl" src="/pixel-hero-girl.svg" alt="Menina de cabelo castanho em pixel art"/>
-    <img class="pixel-scene-mary" src="/pixel-caramary.svg" alt="CaraMary, a cachorrinha caramelo em pixel art"/>
+    <img v-if="view!=='list'" class="pixel-scene-mary" src="/pixel-caramary.svg" alt="CaraMary, a cachorrinha caramelo em pixel art"/>
   </div>
 </section>
 </template>
