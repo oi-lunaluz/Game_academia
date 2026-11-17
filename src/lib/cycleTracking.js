@@ -44,6 +44,36 @@ export function cycleDayInfo(cycle={},today=dateKey(new Date())){
   return {last,day,estimatedDay,next,nextIn,starts}
 }
 
+
+export const CYCLE_PHASES=Object.freeze({
+  menstrual:{id:'menstrual',title:'Menstruação',color:'rosa',
+    description:'Nesta fase algumas pessoas sentem cólicas, cansaço ou menos disposição. Você pode adaptar a intensidade do treino conforme seu conforto; outras pessoas treinam normalmente.'},
+  follicular:{id:'follicular',title:'Fase folicular',color:'verde',
+    description:'Depois da menstruação, algumas pessoas relatam mais disposição. Isso não garante aumento de força. Observe como você se sente e como responde aos exercícios.'},
+  ovulatory:{id:'ovulatory',title:'Período ovulatório',color:'amarelo',
+    description:'A ovulação é apenas estimada pelo calendário. Não existe garantia de pico de força nessa fase, nem certeza sobre o dia de ovulação.'},
+  luteal:{id:'luteal',title:'Fase lútea',color:'lilás',
+    description:'Na fase pré-menstrual podem aparecer alterações no sono, calor, sensibilidade, cansaço e sintomas de TPM. Se afetarem seu treino, vale ajustar esforço e recuperação.'}
+})
+
+// Phase colors are approximate educational ranges, not ovulation detection.
+// A recorded period always takes priority over estimated phases.
+export function phaseForCycleDate(cycle={},day,today=dateKey(new Date())){
+  if(!fromDateKey(day))return null
+  const starts=cycleStarts(cycle,today)
+  const onset=starts.filter(start=>start<=day).at(-1)
+  if(!onset)return null
+  const length=cycleLength(cycle.length)
+  const period=periodLength(cycle.period)
+  const cycleDay=((diffDays(onset,day)%length)+length)%length+1
+  const recorded=starts.some(start=>day>=start&&day<addDays(start,period))
+  if(recorded||cycleDay<=period)return 'menstrual'
+  const approximateOvulation=Math.max(period+2,Math.min(length-1,length-14))
+  if(cycleDay>=approximateOvulation&&cycleDay<=Math.min(length,approximateOvulation+1))return 'ovulatory'
+  if(cycleDay<approximateOvulation)return 'follicular'
+  return 'luteal'
+}
+
 export function cycleCalendar(cycle,month,year,today=dateKey(new Date())){
   const first=new Date(year,month,1)
   const offset=first.getDay()
@@ -68,7 +98,7 @@ export function cycleCalendar(cycle,month,year,today=dateKey(new Date())){
       date,number:d.getDate(),outside:d.getMonth()!==month,
       today:date===today,future:date>today,recorded:!!recorded,
       recordedStart:!!recordedStart,predicted:!!predicted,
-      phase:recorded?'period':predicted?'estimate':'',
+      phase:phaseForCycleDate(cycle,date,today),
       firstDay:!!(recordedStart||(!recorded&&predicted===date))
     }
   })
