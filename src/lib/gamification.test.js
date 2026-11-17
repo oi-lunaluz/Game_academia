@@ -110,3 +110,14 @@ test('cinco horas acumuladas destravam bronze sem precisar de dias consecutivos'
  assert.ok(r.hoursRewards.some(x=>x.id==='hours_5'&&x.tier==='Bronze'))
  assert.equal(r.current,1)
 })
+
+
+test('dobrar carga usa o recorde do primeiro treino, não a série leve de aquecimento',()=>{
+ const first=entry('10/11/2026','forca',{'Agachamento':[{kg:20,reps:10},{kg:40,reps:6}]})
+ const same=loadAchievements([first],new Date('2026-11-17T12:00:00'))
+ assert.equal(same.rewards.some(r=>r.id==='double_Agachamento'),false)
+ const second=entry('17/11/2026','forca',{'Agachamento':[{kg:60,reps:8}]})
+ assert.equal(loadAchievements([first,second],new Date('2026-11-17T12:00:00')).rewards.some(r=>r.id==='double_Agachamento'),false)
+ const third=entry('17/11/2026','forca',{'Agachamento':[{kg:80,reps:5}]})
+ assert.equal(loadAchievements([first,second,third],new Date('2026-11-17T12:00:00')).rewards.some(r=>r.id==='double_Agachamento'),true)
+})
