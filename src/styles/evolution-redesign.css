@@ -96,3 +96,37 @@
 .evolution-intro-party .evolution-intro-girl{height:96px;width:50px;flex:0 0 50px;object-fit:contain;image-rendering:pixelated}
 .evolution-intro-party .evolution-intro-mary{height:66px;width:66px;flex:0 0 66px;object-fit:contain;image-rendering:pixelated;margin-left:-12px}
 @media(max-width:350px){.evolution-intro-party{flex-basis:86px}.evolution-intro-party .evolution-intro-girl{height:83px;width:44px;flex-basis:44px}.evolution-intro-party .evolution-intro-mary{height:60px;width:55px;flex-basis:55px}}
+
+
+/* Ofensiva diária e mural de insígnias por atividade/tempo/força */
+.journey-rewards{gap:15px!important;border-color:#896a56!important;box-shadow:3px 4px #d5bfa1!important;margin:0!important}
+.journey-rewards .pixel-rewards-head{align-items:center}
+.journey-rewards .pixel-streak-chip{max-width:119px;gap:4px;background:#fbd997;border:2px solid #b87c51}
+.journey-rewards .pixel-streak-chip strong{font-size:16px;white-space:nowrap;color:#8f4a34}
+.journey-streak-status{display:flex;align-items:center;gap:12px;background:#f4dfb4;border:2px solid #d4a56f;padding:11px}
+.journey-streak-bubble{min-width:61px;width:61px;height:61px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:#ffe8ac;border:3px solid #b97847;box-shadow:3px 3px #c7a47c;color:#a95539}
+.journey-streak-bubble strong{font:950 16px/1 monospace;color:#7a453b}
+.journey-streak-status>div:last-child{min-width:0}
+.journey-streak-status>div:last-child strong{display:block;font:950 12px/1.25 monospace;color:#724a36}
+.journey-streak-status>div:last-child p{font:750 10px/1.45 monospace;color:#88684e;margin:5px 0 0}
+.journey-stats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.journey-stats>div{background:#f6e4c4;border:1px solid #c7a784}
+.journey-next{border-color:#a6a573;background:#f0eaca}
+.journey-award-group{display:flex;flex-direction:column;gap:9px;padding:12px 10px 13px;background:#fff7e7;border:2px solid #d1b493}
+.journey-award-heading{display:flex;align-items:center;gap:9px;border-bottom:1px solid #dbc5a7;padding-bottom:9px;color:#a55c77}
+.journey-award-heading>div{display:flex;flex-direction:column;gap:4px;min-width:0}
+.journey-award-heading strong{font:950 13px monospace;color:#5b4638}
+.journey-award-heading small{font:750 10px/1.4 monospace;color:#876d58}
+.journey-award-group .pixel-medal-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.journey-award-group .pixel-medal-card{min-width:0;min-height:118px;padding:11px 6px!important;border-radius:2px!important;background:#f7e7c5!important;border:2px solid #b28f66!important}
+.journey-award-group .pixel-medal-card strong{font:900 11px/1.35 monospace;overflow-wrap:anywhere}
+.journey-award-group .pixel-medal-card small{font:750 9px/1.4 monospace;overflow-wrap:anywhere}
+.journey-award-group .pixel-medal-art{box-shadow:2px 2px #b29171;border-radius:50%;border-width:3px}
+.journey-award-group .journey-tier-rosa .pixel-medal-art,.journey-popup-rosa .pixel-popup-medal,.pixel-popup-medal.journey-tier-rosa{background:linear-gradient(135deg,#ffd2ec,#e38ab2);border-color:#ae6383;color:#6e3a59}
+.journey-award-group .journey-tier-bronze .pixel-medal-art,.journey-popup-bronze .pixel-popup-medal,.pixel-popup-medal.journey-tier-bronze{background:linear-gradient(135deg,#fbd9a9,#bd8146);border-color:#905b33;color:#663d21}
+.journey-award-group .journey-tier-prata .pixel-medal-art,.journey-popup-prata .pixel-popup-medal,.pixel-popup-medal.journey-tier-prata{background:linear-gradient(135deg,#f6fbff,#9baec3);border-color:#7c8b9c;color:#4a6377}
+.journey-award-group .journey-tier-ouro .pixel-medal-art,.journey-popup-ouro .pixel-popup-medal,.pixel-popup-medal.journey-tier-ouro{background:linear-gradient(135deg,#fff7ba,#e1ad35);border-color:#b17d30;color:#775018}
+.journey-empty{margin:0;background:#f9edda;border:1px dashed #ccae88;padding:12px;font:750 10px/1.5 monospace;color:#8b6a50}
+.journey-weight-guide{margin:1px 0 0;font:750 9px/1.5 monospace;color:#876b53}
+.journey-rewards .pixel-reward-rule{border-top:1px solid #d4b794;padding-top:12px}
+@media(max-width:350px){.journey-award-group .pixel-medal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.journey-streak-bubble{min-width:51px;width:51px;height:55px}.journey-streak-status{gap:8px}}
