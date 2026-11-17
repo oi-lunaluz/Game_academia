@@ -319,3 +319,23 @@
 /* Movimentação direta do cenário ao deslizar no celular. */
 .quest-world-viewport{touch-action:pan-y}
 .quest-screen .quest-world-viewport .quest-platform-canvas.is-dragging{transition:none!important}
+
+
+/* Ciclo na home: dia + fase, ajuda separada do atalho para o calendário. */
+.quest-hud-cycle{position:relative;display:flex;flex:0 0 42%;max-width:170px;min-width:0;pointer-events:auto}
+.quest-hud-cycle .quest-hud-life{flex:1 1 100%;width:100%;max-width:none;padding-right:29px!important;text-align:left}
+.quest-hud-cycle .quest-hud-life small{line-height:1.35!important;overflow-wrap:anywhere}
+.quest-cycle-help{position:absolute;right:5px;top:6px;display:grid!important;place-items:center!important;width:25px!important;height:25px!important;min-width:25px!important;padding:0!important;background:#e3f0d3!important;border:2px solid #8bb87b!important;color:#41673c!important;border-radius:3px!important;box-shadow:1px 2px #1e281b!important;z-index:2}
+.quest-cycle-help:focus-visible{outline:3px solid white;outline-offset:2px}
+.quest-cycle-backdrop{z-index:100!important;display:flex;align-items:center;justify-content:center}
+.quest-cycle-dialog{width:min(100%,410px);max-height:88dvh;overflow-y:auto;padding:18px;background:#fff1d3;border:4px solid #75513f;box-shadow:5px 6px #242020;display:flex;flex-direction:column;gap:12px;color:#573d31}
+.quest-cycle-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.quest-cycle-dialog-head>span{font:950 10px/1.4 monospace;color:#a05276;letter-spacing:.35px}
+.quest-cycle-dialog-head button{display:grid;place-items:center;width:32px;height:32px;padding:3px!important;background:#f1d9ca!important;color:#694f41!important;border-radius:2px!important}
+.quest-cycle-dialog h2{font:1000 22px/1.2 monospace;margin:0;color:#674457}
+.quest-cycle-dialog p{font:750 12px/1.55 monospace;margin:0;color:#775b4d}
+.quest-cycle-dialog .quest-cycle-day-label{font:900 10px monospace;color:#5b875a;background:#e4efcf;border:1px solid #acc197;padding:8px}
+.quest-cycle-dialog .quest-cycle-disclaimer{font-size:10px;line-height:1.5;color:#78675b}
+.quest-cycle-understand{padding:12px!important;background:#5d9067!important;border:2px solid #3c6745!important;color:white!important;border-radius:2px!important;font:950 12px monospace!important}
+.quest-cycle-open{padding:8px!important;background:transparent!important;color:#82516b!important;font:850 11px monospace!important}
+@media(max-width:350px){.quest-hud-cycle{flex-basis:43%}.quest-hud-cycle .quest-hud-life{padding-right:27px!important}.quest-cycle-help{width:23px!important;height:23px!important;min-width:23px!important;right:3px;top:4px}}
