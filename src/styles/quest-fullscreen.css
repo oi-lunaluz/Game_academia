@@ -315,3 +315,7 @@
 @media(prefers-reduced-motion:reduce) {
   .quest-screen .quest-world-viewport .quest-platform-canvas {transition:none}
 }
+
+/* Movimentação direta do cenário ao deslizar no celular. */
+.quest-world-viewport{touch-action:pan-y}
+.quest-screen .quest-world-viewport .quest-platform-canvas.is-dragging{transition:none!important}
