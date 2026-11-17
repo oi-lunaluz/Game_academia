@@ -11,9 +11,9 @@ const activeNode=computed(()=>props.stages.find(s=>s.current)||null)
 </script>
 <template>
   <div class="pixel-map-frame">
-    <div class="pixel-map quest-full-map" role="group" :aria-label="'Mapa da área '+(chapter+1)+' com cinco fases'">
+    <div class="pixel-map quest-full-map quest-visual-v2" role="group" :aria-label="'Mapa da área '+(chapter+1)+' com cinco fases'">
       <div class="quest-platform-canvas">
-        <img class="quest-platform-image" src="/quest-castle-platforms.webp"
+        <img class="quest-platform-image" src="/quest-castle-hd.webp"
           alt="" aria-hidden="true" draggable="false"/>
 
       <button v-for="stage in stages" :key="stage.number" type="button"
