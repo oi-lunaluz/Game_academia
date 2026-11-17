@@ -130,3 +130,59 @@
 @media(prefers-reduced-motion:reduce){
   .quest-screen .pixel-stage.is-active .pixel-stage-circle{animation:none}
 }
+
+
+/* Castelo enviado pela usuária: cenário completo, SEM background-size:cover.
+   A ilustração quadrada fica inteira num palco responsivo e as cinco plataformas
+   mantêm posições percentuais relativas à própria arte. */
+.quest-screen .quest-full-map{
+  background:linear-gradient(180deg,#70bfe1 0%,#b2d8df 39%,#709e95 72%,#526348 100%)!important;
+}
+.quest-screen .quest-full-map::before{
+  content:"";position:absolute;inset:-24px;z-index:0;pointer-events:none;
+  background:url('/quest-castle-platforms.webp') center / cover no-repeat;
+  filter:blur(22px) saturate(.8);
+  opacity:.38;
+}
+.quest-platform-canvas{
+  position:absolute;z-index:6;
+  width:min(100%, calc(100dvh - 245px));
+  max-height:calc(100% - 175px);
+  aspect-ratio:1/1;
+  left:50%;top:52%;
+  transform:translate(-50%,-50%);
+  isolation:isolate;
+  background:#75c1e1;
+  box-shadow:0 9px 25px #19291a66;
+}
+.quest-platform-image{
+  width:100%;height:100%;display:block;
+  object-fit:contain;image-rendering:pixelated;
+  user-select:none;pointer-events:none;
+}
+.quest-platform-canvas .pixel-stage{
+  z-index:8;width:52px;filter:drop-shadow(1px 2px 0 #171a1f);
+}
+.quest-platform-canvas .pixel-stage-circle{
+  width:38px;height:38px;
+  border:3px solid #392e2b;
+  border-radius:3px!important;
+  font:1000 16px monospace;
+  box-shadow:inset 0 -4px #bf824b,2px 3px #271f20;
+}
+.quest-platform-canvas .pixel-stage-name{display:none}
+.quest-platform-canvas .pixel-party{
+  z-index:9;width:77px;height:69px;
+  transform:translate(-63%,-91%);
+}
+.quest-platform-canvas .pixel-party-girl{width:48%;height:100%}
+.quest-platform-canvas .pixel-party-mary{width:52%;height:72%}
+.quest-platform-canvas .pixel-stage:focus-visible{outline-offset:2px}
+@media(max-height:680px){
+  .quest-platform-canvas{top:53%;width:min(100%,calc(100dvh - 225px));max-height:calc(100% - 154px)}
+  .quest-platform-canvas .pixel-party{width:58px;height:58px}
+  .quest-platform-canvas .pixel-stage-circle{width:31px;height:31px;font-size:14px}
+}
+@media(min-width:600px){
+  .quest-platform-canvas{width:min(100%,calc(100dvh - 245px));max-height:calc(100% - 175px)}
+}
