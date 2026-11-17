@@ -16,7 +16,6 @@ const {
     </div>
     <div class="week-cards-heading">
       <div><span class="eyebrow">SEU PLANO DE FORÇA</span><h3>{{weeklyStrengthCards.filter(w=>w.completed).length}} de {{weeklyStrengthCards.length}} treinos feitos</h3></div>
-      <button type="button" class="week-edit-fichas" @click="view='list'">Minhas fichas</button>
     </div>
     <p class="week-card-explain">Faça na ordem que preferir. O check pertence à ficha nesta semana, não a um dia fixo.</p>
     <div v-if="weeklyStrengthCards.length" class="week-card-stack">
@@ -54,13 +53,5 @@ const {
       <button type="button" @click="openCreateModal">Criar primeira ficha</button>
     </div>
     <p v-if="quickFeedback" class="quick-workout-feedback" role="status">{{quickFeedback}}</p>
-    <section v-if="cardioPlacement==='separado'&&Number(state.cardioGoal)>0" class="week-cardio-separate">
-      <div class="week-cardio-head">
-        <AppIcon name="timer" :size="21"/>
-        <div><span>CARDIO SEPARADO</span><strong>Treino de cardio</strong><small>Para fazer em outro horário ou em outro dia</small></div>
-      </div>
-      <p>{{weeklyCardio}} de {{state.cardioGoal}} minutos realizados nesta semana</p>
-      <button type="button" @click="openCardioModal">Iniciar cardio</button>
-    </section>
   </section>
 </template>
