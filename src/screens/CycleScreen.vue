@@ -1,20 +1,49 @@
 <script setup>
 import { computed, inject, ref } from 'vue'
 import AppIcon from '../AppIcon.vue'
-import { CYCLE_PHASES, phaseForCycleDate } from '../lib/cycleTracking.js'
+import { CYCLE_PHASES, phaseForCycleDate, cycleCalendar, cycleDayInfo as getCycleDayInfo, togglePeriodStart } from '../lib/cycleTracking.js'
 import { dateKey } from '../lib/planner.js'
 const {
   cycle,cycleDay,cycleDayInfo,recordPeriodDay,
-  moveCycleMonth,calendarMonthName,cycleCalendarDays,
+  moveCycleMonth,calendarMonthName,cycleCalendarMonth,cycleCalendarYear,
   noteDate,noteEnergy,noteSymptoms,noteDifficulty,addNote,demoMode
 }=inject('pegaPesoApp')
 const phaseModal=ref(null)
+const editing=ref(false)
+const draft=ref(null)
+const visibleCycle=computed(()=>editing.value&&draft.value?draft.value:cycle.value)
+const visibleCycleInfo=computed(()=>editing.value?getCycleDayInfo(visibleCycle.value,dateKey(new Date())):cycleDayInfo.value)
+const visibleDays=computed(()=>cycleCalendar(visibleCycle.value,cycleCalendarMonth.value,cycleCalendarYear.value,dateKey(new Date())))
+function beginEdit(){
+  draft.value=JSON.parse(JSON.stringify(cycle.value))
+  editing.value=true
+  feedback.value=''
+}
+function cancelEdit(){
+  editing.value=false
+  draft.value=null
+  feedback.value='Alterações canceladas.'
+}
+function saveEdit(){
+  if(!editing.value||!draft.value)return
+  const pending=draft.value
+  pending.length=Math.max(15,Math.min(60,Math.round(Number(pending.length)||28)))
+  pending.period=Math.max(1,Math.min(15,Math.round(Number(pending.period)||5)))
+  cycle.value.length=pending.length
+  cycle.value.period=pending.period
+  cycle.value.periodStarts=[...(pending.periodStarts||[])]
+  cycle.value.start=pending.start||''
+  cycle.value.enabled=true
+  editing.value=false
+  draft.value=null
+  feedback.value='Alterações salvas!'
+}
 const phaseOrder=['menstrual','follicular','ovulatory','luteal']
 const currentPhase=computed(()=>{
   // Depend on the existing cycle-day value so the label refreshes with the clock.
   void cycleDayInfo.value
   const today=dateKey(new Date())
-  return phaseForCycleDate(cycle.value,today,today)
+  return phaseForCycleDate(visibleCycle.value,today,today)
 })
 const currentPhaseInfo=computed(()=>currentPhase.value?CYCLE_PHASES[currentPhase.value]:null)
 function showPhase(phase){if(CYCLE_PHASES[phase])phaseModal.value=CYCLE_PHASES[phase]}
@@ -22,28 +51,36 @@ function closePhase(){phaseModal.value=null}
 const guideOpen=ref(false)
 const notesOpen=ref(false)
 const feedback=ref('')
-const savedStarts=computed(()=>[...cycleDayInfo.value.starts].reverse().slice(0,4))
-const lastStart=computed(()=>cycleDayInfo.value.last?
-  new Date(cycleDayInfo.value.last+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'—')
-const predictedStart=computed(()=>cycleDayInfo.value.next?
-  new Date(cycleDayInfo.value.next+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'—')
+const savedStarts=computed(()=>[...visibleCycleInfo.value.starts].reverse().slice(0,4))
+const lastStart=computed(()=>visibleCycleInfo.value.last?
+  new Date(visibleCycleInfo.value.last+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'—')
+const predictedStart=computed(()=>visibleCycleInfo.value.next?
+  new Date(visibleCycleInfo.value.next+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short'}):'—')
 function tapDay(day){
+  if(!editing.value){
+    if(day.phase)showPhase(day.phase)
+    return
+  }
   if(day.future)return
   const removing=day.recorded
-  if(!recordPeriodDay(day.date))return
-  feedback.value=removing?'Registro retirado. Pode tocar de novo para corrigir.':
-    'Início da menstruação registrado! Os próximos dias aparecem em rosa.'
+  const update=togglePeriodStart(draft.value,day.date,dateKey(new Date()))
+  if(!update)return
+  Object.assign(draft.value,update)
+  feedback.value=removing?'Data desmarcada. Toque em Salvar para confirmar.':
+    'Data marcada. Toque em Salvar para confirmar.'
 }
 function removeStart(day){
-  recordPeriodDay(day)
-  feedback.value='Registro retirado do calendário.'
+  if(!editing.value)return
+  const update=togglePeriodStart(draft.value,day,dateKey(new Date()))
+  if(update)Object.assign(draft.value,update)
+  feedback.value='Registro desmarcado. Salve para confirmar.'
 }
 const dateLabel=day=>new Date(day+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'numeric'})
 function clampCycle(){
-  cycle.length=Math.max(15,Math.min(60,Math.round(Number(cycle.length)||28)))
+  if(editing.value)draft.value.length=Math.max(15,Math.min(60,Math.round(Number(draft.value.length)||28)))
 }
 function clampPeriod(){
-  cycle.period=Math.max(1,Math.min(15,Math.round(Number(cycle.period)||5)))
+  if(editing.value)draft.value.period=Math.max(1,Math.min(15,Math.round(Number(draft.value.period)||5)))
 }
 </script>
 
@@ -53,20 +90,21 @@ function clampPeriod(){
       <div>
         <span class="cycle-kicker">SEU CORPO, SEU RITMO</span>
         <h2>Meu ciclo <AppIcon name="flower" :size="22"/></h2>
-        <p>Um toque no calendário para registrar sua menstruação.</p>
+        <p>Acompanhe suas fases. Use o lápis para registrar ou corrigir datas.</p>
       </div>
       <img src="/pixel-caramary.svg" class="cycle-head-dog" alt="CaraMary em pixel art"/>
     </div>
 
-    <section class="cycle-calendar" aria-label="Calendário menstrual clicável">
+    <section class="cycle-calendar" aria-label="Calendário menstrual com edição protegida">
       <div class="cycle-month-bar">
         <button type="button" aria-label="Mês anterior" @click="moveCycleMonth(-1)">‹</button>
         <h3>{{calendarMonthName}}</h3>
         <button type="button" aria-label="Próximo mês" @click="moveCycleMonth(1)">›</button>
+        <button v-if="!editing" type="button" class="cycle-edit-pencil" aria-label="Editar registros da menstruação" title="Editar calendário" @click="beginEdit"><AppIcon name="pencil" :size="18"/></button>
       </div>
       <div class="cycle-calendar-grid">
         <span v-for="(weekday,i) in ['D','S','T','Q','Q','S','S']" :key="'wd'+i" class="cycle-weekday">{{weekday}}</span>
-        <button v-for="day in cycleCalendarDays" :key="day.date" type="button"
+        <button v-for="day in visibleDays" :key="day.date" type="button"
           class="cycle-day" :class="{
             'is-outside':day.outside,'is-today':day.today,
             'is-recorded':day.recorded,'is-start':day.recordedStart,
@@ -75,11 +113,12 @@ function clampPeriod(){
             'phase-follicular':day.phase==='follicular',
             'phase-ovulatory':day.phase==='ovulatory',
             'phase-luteal':day.phase==='luteal',
-            'phase-current':day.today&&!!day.phase
+            'phase-current':day.today&&!!day.phase,
+            'is-editing':editing
           }"
-          :disabled="day.future"
+          :disabled="editing&&day.future"
           :aria-label="dateLabel(day.date)+(day.recorded?', menstruação registrada':day.predicted?', menstruação prevista':'')+(day.phase?', '+CYCLE_PHASES[day.phase].title.toLowerCase()+' estimada':'')+(day.future?', data futura':'')"
-          :aria-pressed="day.recorded" @click="tapDay(day)">
+          :aria-pressed="editing?day.recorded:undefined" @click="tapDay(day)">
           <span>{{day.number}}</span>
           <i v-if="day.recordedStart" aria-hidden="true"></i>
         </button>
@@ -99,7 +138,7 @@ function clampPeriod(){
           <AppIcon name="help" :size="19"/>
         </button>
       </div>
-      <div v-if="cycleDayInfo.last" class="cycle-phase-selector" aria-label="Explicações das fases do ciclo">
+      <div v-if="visibleCycleInfo.last" class="cycle-phase-selector" aria-label="Explicações das fases do ciclo">
         <button v-for="id in phaseOrder" :key="id" type="button"
           class="cycle-phase-chip" :class="['phase-'+id,{'selected':currentPhase===id}]"
           @click="showPhase(id)"
@@ -109,7 +148,12 @@ function clampPeriod(){
           <AppIcon name="help" :size="13"/>
         </button>
       </div>
-      <p class="cycle-calendar-hint">Toque no <strong>primeiro dia</strong> em que a menstruação começou. A duração preenchida abaixo colore os dias seguintes. Para desfazer, toque novamente no dia rosa.</p>
+      <p class="cycle-calendar-hint" v-if="!editing">Para registrar ou corrigir sua menstruação, toque no <strong>lápis ✎</strong> no canto do calendário. Fora da edição, tocar nas datas não altera seus registros.</p>
+      <p v-else class="cycle-calendar-hint"><strong>Modo edição:</strong> toque no primeiro dia da menstruação para marcar ou no dia rosa para desmarcar. Confira e pressione <strong>Salvar</strong>.</p>
+      <div v-if="editing" class="cycle-edit-actions">
+        <button type="button" class="cycle-edit-cancel" @click="cancelEdit">Cancelar</button>
+        <button type="button" class="cycle-edit-save" @click="saveEdit"><AppIcon name="check" :size="17"/> Salvar alterações</button>
+      </div>
       <p v-if="feedback" class="cycle-feedback" role="status">{{feedback}}</p>
     </section>
 
@@ -121,8 +165,8 @@ function clampPeriod(){
       </div>
       <div class="cycle-overview-item">
         <small>Dia do ciclo</small>
-        <strong>{{cycleDay?'Dia '+cycleDay:'—'}}</strong>
-        <span>{{cycleDay?'estimado pelo calendário':'aguardando registro'}}</span>
+        <strong>{{visibleCycleInfo.estimatedDay?'Dia '+visibleCycleInfo.estimatedDay:'—'}}</strong>
+        <span>{{visibleCycleInfo.estimatedDay?'estimado pelo calendário':'aguardando registro'}}</span>
       </div>
       <div class="cycle-overview-item">
         <small>Próximo início</small>
@@ -134,14 +178,14 @@ function clampPeriod(){
     <section class="cycle-settings">
       <div class="cycle-settings-title">
         <AppIcon name="calendar" :size="19"/>
-        <div><strong>Como é seu ciclo?</strong><small>Você pode ajustar quando quiser.</small></div>
+        <div><strong>Como é seu ciclo?</strong><small>Use o lápis do calendário para ajustar.</small></div>
       </div>
       <div class="cycle-two-inputs">
         <label>Ciclo costuma durar
-          <span><input type="number" inputmode="numeric" min="15" max="60" v-model.number="cycle.length" @change="clampCycle"/> dias</span>
+          <span><input type="number" inputmode="numeric" min="15" max="60" v-if="editing" v-model.number="draft.length" @change="clampCycle"/><strong v-else>{{cycle.length}}</strong> dias</span>
         </label>
         <label>Menstruação dura
-          <span><input type="number" inputmode="numeric" min="1" max="15" v-model.number="cycle.period" @change="clampPeriod"/> dias</span>
+          <span><input type="number" inputmode="numeric" min="1" max="15" v-if="editing" v-model.number="draft.period" @change="clampPeriod"/><strong v-else>{{cycle.period}}</strong> dias</span>
         </label>
       </div>
       <p>A contagem do ciclo começa no primeiro dia da menstruação. Os outros dias rosados usam a duração informada por você.</p>
@@ -152,7 +196,7 @@ function clampPeriod(){
       <div class="cycle-recent-dates">
         <div v-for="start in savedStarts" :key="start">
           <span>{{dateLabel(start)}}</span>
-          <button type="button" :aria-label="'Apagar início de '+dateLabel(start)" @click="removeStart(start)"><AppIcon name="close" :size="14"/></button>
+          <button v-if="editing" type="button" :aria-label="'Desmarcar início de '+dateLabel(start)" @click="removeStart(start)"><AppIcon name="close" :size="14"/></button>
         </div>
       </div>
     </section>
