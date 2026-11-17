@@ -34,8 +34,6 @@ const cardioMinutes=computed(()=>{
   const entry=state.value.workouts.find(w=>w.name===mission.value?.name)
   return entry?.cardioMinutes??state.value.cardioSessionTarget??0
 })
-const progress=computed(()=>((currentStage.value-1)%5)/5*100)
-const nextReward=computed(()=>gamification.value.next)
 // Corazões representam apenas o progresso da agenda do ciclo, nunca saúde ou energia.
 const cycleHearts=computed(()=>{
   const length=Math.max(1,Number(cycle.value.length)||28)
@@ -95,16 +93,9 @@ function simulate(){if(!demoMode||!workouts.value.length)return;simulatedWins.va
               <small>{{cycle.enabled&&cycleDay?'Andamento do ciclo':'Toque para configurar'}}</small>
             </button>
           </div>
-          <div class="quest-hud-progress">
-            <div><span>PROGRESSO DE FASES</span><strong>{{completedSessions}} missões feitas</strong></div>
-            <div class="quest-xp-track" role="progressbar" :aria-valuenow="progress" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso até a próxima área">
-              <i :style="{width:progress+'%'}"></i>
-            </div>
-          </div>
           <div class="quest-hud-shortcuts">
             <button type="button" @click="view='stats'"><AppIcon name="trophy" :size="15"/> {{gamification.current}} em sequência</button>
             <button type="button" @click="startCardio"><AppIcon name="timer" :size="15"/> {{weeklyCardio}}/{{state.cardioGoal||0}} min cardio</button>
-            <button v-if="nextReward" type="button" @click="view='stats'"><AppIcon name="medal" :size="15"/> Prêmio: {{nextReward.threshold}}</button>
           </div>
         </div>
       </template>
