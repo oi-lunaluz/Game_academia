@@ -1,46 +1,183 @@
 <script setup>
-import { inject } from 'vue'
+import { computed, inject, ref } from 'vue'
 import AppIcon from '../AppIcon.vue'
 import PixelRewardShelf from './PixelRewardShelf.vue'
 
 const {
-  workout,
-  selectedStat,
-  selectedWorkoutStat,
-  workoutStatNames,
-  statsSessions,
-  allExercises,
-  bestExercise,
-  maxLoad,
-  totalVolume,
-  completedSessions,
-  onWorkoutStatChange,
-  chartWeeks,
-  chartMax,
-  kind,
-  exercise,
-  kg,
-  reps,
-} = inject('pegaPesoApp')
+  view,
+  selectedStat, selectedWorkoutStat, workoutStatNames,
+  statsSessions, allExercises, bestExercise, maxLoad,
+  totalVolume, completedSessions, onWorkoutStatChange,
+  chartWeeks, chartMax, gamification
+}=inject('pegaPesoApp')
+
+const tab=ref('overview')
+const historyOpen=ref(false)
+const seriesOpen=ref(false)
+const hasVolume=computed(()=>chartWeeks.value.some(week=>week.value>0))
+const recentSessions=computed(()=>[...statsSessions.value].reverse().slice(0,8))
+const latestSeries=computed(()=>[...bestExercise.value].reverse().slice(0,8))
+const totalWorkouts=computed(()=>statsSessions.value.filter(h=>h.kind==='forca').length)
+const totalCardio=computed(()=>statsSessions.value.filter(h=>h.kind==='cardio').length)
+const bestByExercise=computed(()=>{
+  const result=new Map()
+  for(const set of bestExercise.value){
+    if(!result.has(set.name)||result.get(set.name).kg<set.kg)
+      result.set(set.name,{name:set.name,kg:set.kg,reps:set.reps,date:set.date})
+  }
+  return [...result.values()].sort((a,b)=>b.kg-a.kg).slice(0,4)
+})
+const allTimeLoadLabel=computed(()=>maxLoad.value>0?`${maxLoad.value} kg`:'—')
+function openHistory(){tab.value='overview';historyOpen.value=!historyOpen}
 </script>
 
 <template>
-<div class="brazil-banner pink-banner"><div><span class="kicker"><AppIcon name="chart" :size="17"/> O PESO VARIA...</span><h2>Sua evolução<br/>continua!</h2><p>Cada repetição conta. <AppIcon name="heart" :size="17"/></p></div><img class="banner-dog" src="/caramelo-treino.svg" alt="" aria-hidden="true"/></div>
-<PixelRewardShelf/>
-<div class="stats-workout-filter">
-<label class="brazil-label" for="filter-workout">Filtrar por treino</label>
-<select id="filter-workout" class="brazil-select" v-model="selectedWorkoutStat" @change="onWorkoutStatChange">
-<option value="all">Todos os treinos</option>
-<option v-for="name in workoutStatNames" :key="name" :value="name">{{name}}</option>
-</select>
-<p>Os números abaixo consideram {{selectedWorkoutStat==='all'?'todos os treinos registrados':'somente o treino '+selectedWorkoutStat}}.</p>
-</div>
-<div class="brazil-stats"><div class="stat-tile yellow-tile"><span><AppIcon name="dumbbell" :size="17"/> VOLUME REGISTRADO</span><strong>{{totalVolume.toLocaleString('pt-BR')}}<small> kg</small></strong></div><div class="stat-tile mint-tile"><span><AppIcon name="trophy" :size="17"/> MAIOR CARGA</span><strong>{{maxLoad}}<small> kg</small></strong></div></div>
-<section class="chart-card"><div class="brazil-row-title"><h3>Volume de treino</h3><span>Últimas 4 semanas</span></div><div class="chart-bars"><div v-for="w in chartWeeks" :key="w.label" class="chart-column"><strong>{{w.value>0?w.value.toLocaleString('pt-BR'):'–'}}</strong><div class="chart-rail"><div :style="{height:Math.max(3,w.value/chartMax*100)+'%'}"></div></div><small>{{w.label}}</small></div></div><p class="chart-footnote">Volume = peso × repetições das séries registradas.</p></section>
-<div class="brazil-row-title"><h3>Seu histórico</h3><span>{{completedSessions}} sessões</span></div>
-<label class="brazil-label" for="filter-exercise">Filtrar por exercício</label>
-<select id="filter-exercise" class="brazil-select" v-model="selectedStat"><option value="all">Todos os exercícios</option><option v-for="e in allExercises" :key="e" :value="e">{{e}}</option></select>
-<div v-if="!bestExercise.length" class="brazil-empty"><strong><AppIcon name="smile" :size="17"/> Começou agora?</strong><p>{{selectedWorkoutStat==='all'?'Registre suas séries e veja sua evolução crescer por aqui!':'Ainda não há séries registradas para este treino.'}}</p></div>
-<div class="brazil-list"><div v-for="(s,i) in [...bestExercise].reverse().slice(0,20)" :key="i" class="brazil-list-row"><span class="row-icon pink-icon"><AppIcon name="dumbbell" :size="17"/></span><span class="row-info"><strong>{{s.name}}</strong><small>{{s.date}}</small></span><span class="row-value">{{s.kg}} kg × {{s.reps}}</span></div></div>
-<div class="brazil-row-title"><h3>Treinos concluídos</h3></div><div v-if="!statsSessions.length" class="brazil-empty">Nenhuma sessão concluída neste filtro.</div><div class="brazil-list"><div v-for="(h,i) in [...statsSessions].reverse().slice(0,10)" :key="i" class="brazil-list-row"><span class="row-icon mint-icon"><AppIcon name="check" :size="17"/></span><span class="row-info"><strong>{{h.kind==='cardio'?(h.modality||'Cardio'):h.name}}</strong><small>{{h.date}}</small></span><span class="row-value">{{Math.round(h.seconds/60)}} min</span></div></div>
+  <div class="evolution-screen">
+    <div class="evolution-intro">
+      <div>
+        <span class="evolution-eyebrow">DIÁRIO DA AVENTUREIRA</span>
+        <h2>Sua evolução ✦</h2>
+        <p>Veja o que você conquistou, no seu ritmo.</p>
+      </div>
+      <img src="/pixel-hero-girl.svg" alt="A aventureira em pixel art" class="evolution-intro-girl"/>
+    </div>
+
+    <div class="evolution-segments" role="group" aria-label="Seções da evolução">
+      <button type="button" :class="{active:tab==='overview'}" :aria-pressed="tab==='overview'"
+        @click="tab='overview'">
+        <AppIcon name="chart" :size="16"/> Meu progresso
+      </button>
+      <button type="button" :class="{active:tab==='rewards'}" :aria-pressed="tab==='rewards'"
+        @click="tab='rewards'">
+        <AppIcon name="medal" :size="16"/> Medalhas
+        <span v-if="gamification.unlocked.length" class="evolution-count">{{gamification.unlocked.length}}</span>
+      </button>
+    </div>
+
+    <template v-if="tab==='overview'">
+      <div class="evolution-filter">
+        <label for="evolution-workout">Acompanhar</label>
+        <select id="evolution-workout" v-model="selectedWorkoutStat" @change="onWorkoutStatChange">
+          <option value="all">Todos os treinos</option>
+          <option v-for="name in workoutStatNames" :key="name" :value="name">{{name}}</option>
+        </select>
+      </div>
+
+      <section class="evolution-overview" aria-label="Resumo dos treinos">
+        <div class="evolution-main-stat">
+          <span><AppIcon name="dumbbell" :size="17"/> TREINOS DE FORÇA</span>
+          <strong>{{totalWorkouts}}</strong>
+          <small>sessões concluídas {{selectedWorkoutStat==='all'?'no total':'nesta ficha'}}</small>
+          <span class="evolution-main-foot">Cada treino feito conta na jornada.</span>
+        </div>
+        <div class="evolution-side-stats">
+          <div>
+            <span><AppIcon name="trophy" :size="16"/> MAIOR CARGA</span>
+            <strong>{{allTimeLoadLabel}}</strong>
+            <small>em uma série registrada</small>
+          </div>
+          <div>
+            <span><AppIcon name="activity" :size="16"/> CARDIO</span>
+            <strong>{{totalCardio}}</strong>
+            <small>{{selectedWorkoutStat==='all'?'sessões registradas':'sessões deste filtro'}}</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="evolution-chart-card">
+        <div class="evolution-section-top">
+          <div><span>SEU RITMO</span><h3>Volume nas últimas 4 semanas</h3></div>
+          <AppIcon name="bars" :size="22"/>
+        </div>
+        <p class="evolution-section-desc">Soma das cargas × repetições que você registrou em cada semana.</p>
+        <div v-if="hasVolume" class="evolution-chart" role="img" aria-label="Gráfico de volume semanal em quilogramas">
+          <div v-for="(week,i) in chartWeeks" :key="week.label" class="evolution-chart-col">
+            <span>{{week.value?week.value.toLocaleString('pt-BR'):'0'}}</span>
+            <div class="evolution-chart-track">
+              <div :style="{height:week.value?Math.max(5,week.value/chartMax*100)+'%':'0%'}"
+                :class="{current:i===chartWeeks.length-1}"></div>
+            </div>
+            <strong>{{week.label}}</strong>
+          </div>
+        </div>
+        <div v-else class="evolution-empty-graph">
+          <AppIcon name="chart" :size="26"/>
+          <strong>Seu gráfico começa com os registros</strong>
+          <p>Finalize um treino com séries e cargas para ver a evolução aqui.</p>
+        </div>
+        <div class="evolution-chart-summary">
+          <span>Volume total registrado</span>
+          <strong>{{totalVolume.toLocaleString('pt-BR')}} kg</strong>
+        </div>
+        <small class="evolution-caption">O volume é uma medida de atividade registrada, não uma pontuação de força ou resultado físico.</small>
+      </section>
+
+      <section class="evolution-records">
+        <div class="evolution-section-top">
+          <div><span>CONQUISTAS REAIS</span><h3>Meus recordes</h3></div>
+          <AppIcon name="trophy" :size="22"/>
+        </div>
+        <label for="evolution-exercise">Escolher exercício</label>
+        <select id="evolution-exercise" v-model="selectedStat">
+          <option value="all">Todos os exercícios</option>
+          <option v-for="name in allExercises" :key="name" :value="name">{{name}}</option>
+        </select>
+        <div v-if="bestByExercise.length" class="evolution-pr-list">
+          <div v-for="(pr,index) in bestByExercise" :key="pr.name" class="evolution-pr-row">
+            <span class="evolution-pr-medal">{{index+1}}</span>
+            <div><strong>{{pr.name}}</strong><small>{{pr.date}} · {{pr.reps}} repetições</small></div>
+            <b>{{pr.kg}} kg</b>
+          </div>
+        </div>
+        <div v-else class="evolution-empty-small">
+          Ainda não existem cargas registradas para este filtro.
+        </div>
+        <button v-if="bestExercise.length" class="evolution-soft-toggle" type="button"
+          :aria-expanded="seriesOpen" @click="seriesOpen=!seriesOpen">
+          {{seriesOpen?'Ocultar registros de séries':'Ver séries registradas'}}
+          <AppIcon name="chevron" :size="16"/>
+        </button>
+        <div v-if="seriesOpen" class="evolution-series-list">
+          <div v-for="(s,i) in latestSeries" :key="i">
+            <div><strong>{{s.name}}</strong><small>{{s.date}}</small></div>
+            <span>{{s.kg}} kg × {{s.reps}}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="evolution-history">
+        <button class="evolution-history-toggle" type="button" :aria-expanded="historyOpen" @click="openHistory">
+          <span class="evolution-history-icon"><AppIcon name="calendarCheck" :size="19"/></span>
+          <span class="evolution-history-title">
+            <strong>Histórico de atividades</strong>
+            <small>{{completedSessions}} {{completedSessions===1?'registro':'registros'}} neste filtro</small>
+          </span>
+          <AppIcon name="chevron" :size="18"/>
+        </button>
+        <div v-if="historyOpen" class="evolution-history-content">
+          <p v-if="!recentSessions.length">Suas próximas sessões aparecerão aqui.</p>
+          <div v-for="(session,i) in recentSessions" :key="i" class="evolution-history-row">
+            <span class="evolution-history-dot"><AppIcon :name="session.kind==='cardio'?'timer':'check'" :size="15"/></span>
+            <div><strong>{{session.kind==='cardio'?(session.modality||'Cardio'):session.name}}</strong><small>{{session.date}}</small></div>
+            <span>{{session.quick?'✓':Math.round((Number(session.seconds)||0)/60)+' min'}}</span>
+          </div>
+          <small v-if="statsSessions.length>8">Mostrando as 8 sessões mais recentes.</small>
+        </div>
+      </section>
+      <button class="evolution-go-train" type="button" @click="view='list'">
+        <AppIcon name="dumbbell" :size="17"/> Ir para meus treinos
+      </button>
+    </template>
+
+    <template v-else>
+      <section class="evolution-rewards-intro">
+        <img src="/pixel-caramary.svg" alt="CaraMary em pixel art"/>
+        <div><strong>Seu mural de conquistas</strong><p>A CaraMary comemora cada conquista com você!</p></div>
+      </section>
+      <PixelRewardShelf/>
+      <button class="evolution-go-train" type="button" @click="tab='overview'">
+        <AppIcon name="chart" :size="17"/> Voltar ao meu progresso
+      </button>
+    </template>
+  </div>
 </template>
