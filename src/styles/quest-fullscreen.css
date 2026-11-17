@@ -191,3 +191,7 @@
 .quest-screen .quest-full-map::before{display:none!important}
 .quest-platform-canvas{background:#8bcbea!important;box-shadow:none!important}
 .quest-platform-image{image-rendering:auto!important;filter:none!important;object-fit:contain!important}
+
+/* A versão antiga do webp foi comprimida verticalmente (280 x 498).
+   Restauramos sua proporção quadrada original sem recortar o castelo. */
+.quest-platform-image{object-fit:fill!important;width:100%!important;height:100%!important;filter:contrast(1.06) saturate(1.12)!important}
