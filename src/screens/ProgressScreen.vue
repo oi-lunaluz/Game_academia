@@ -39,7 +39,10 @@ function openHistory(){tab.value='overview';historyOpen.value=!historyOpen}
         <h2>Sua evolução ✦</h2>
         <p>Veja o que você conquistou, no seu ritmo.</p>
       </div>
-      <img src="/pixel-hero-girl.svg" alt="A aventureira em pixel art" class="evolution-intro-girl"/>
+      <div class="evolution-intro-party">
+        <img src="/pixel-hero-girl.svg" alt="A aventureira em pixel art" class="evolution-intro-girl"/>
+        <img src="/pixel-caramary.svg" alt="CaraMary acompanha a aventureira" class="evolution-intro-mary"/>
+      </div>
     </div>
 
     <div class="evolution-segments" role="group" aria-label="Seções da evolução">
