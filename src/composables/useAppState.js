@@ -7,6 +7,7 @@ import { emptyTrainingState } from '../lib/onboarding.js'
 import { toggleQuickWorkout } from '../lib/quickWorkout.js'
 import { weekStrength, toggleWeekStrength, weekLabel } from '../lib/weeklyCards.js'
 import { calculateStreak, newlyUnlocked, REWARDS } from '../lib/gamification.js'
+import {cycleCalendar,cycleDayInfo as readCycleDayInfo,togglePeriodStart} from '../lib/cycleTracking.js'
 import {
   renameWorkoutState,renameExerciseState,removeExerciseState,removeWorkoutState
 } from '../lib/workoutManagement.js'
@@ -292,17 +293,26 @@ export function useAppState({accountId,accountName,initialCloud=null,cloudRevisi
     ...(initialCloud?.cycle||(demoMode?{}:readJson(cycleKey,{})))
   })
   if(!Array.isArray(cycle.value.notes))cycle.value.notes=[]
+  // Preserve old start date and all existing notes when upgrading from single-date tracking.
+  if(!Array.isArray(cycle.value.periodStarts))
+    cycle.value.periodStarts=cycle.value.start?[cycle.value.start]:[]
   if(!demoMode)watch(cycle,v=>writeJson(cycleKey,v),{deep:true})
   const noteDate=ref(dateKey(new Date())),noteEnergy=ref('normal'),noteSymptoms=ref(''),noteDifficulty=ref('normal')
-  const cycleDay=computed(()=>{if(!cycle.value.start)return null;const diff=Math.floor((new Date().setHours(12,0,0,0)-new Date(cycle.value.start+'T12:00:00').getTime())/86400000);return ((diff%Math.max(1,cycle.value.length))+Math.max(1,cycle.value.length))%Math.max(1,cycle.value.length)+1})
+  const cycleDayInfo=computed(()=>readCycleDayInfo(cycle.value,dateToday.value))
+  const cycleDay=computed(()=>cycleDayInfo.value.estimatedDay)
+  function recordPeriodDay(day){
+    const update=togglePeriodStart(cycle.value,day,dateToday.value)
+    if(!update)return false
+    Object.assign(cycle.value,update)
+    return true
+  }
   function addNote(){cycle.value.notes.unshift({date:noteDate.value,energy:noteEnergy.value,symptoms:noteSymptoms.value,difficulty:noteDifficulty.value});noteSymptoms.value=''}
   const weeklyCardio=computed(()=>cardioMinutesThisWeek(state.value.history,calendarNow.value))
   const cycleCalendarMonth=ref(new Date().getMonth())
   const cycleCalendarYear=ref(new Date().getFullYear())
   function moveCycleMonth(delta){const d=new Date(cycleCalendarYear.value,cycleCalendarMonth.value+delta,1);cycleCalendarMonth.value=d.getMonth();cycleCalendarYear.value=d.getFullYear()}
-  const dateISO=dateKey
   const calendarMonthName=computed(()=>new Date(cycleCalendarYear.value,cycleCalendarMonth.value,1).toLocaleDateString('pt-BR',{month:'long',year:'numeric'}))
-  const cycleCalendarDays=computed(()=>{const first=new Date(cycleCalendarYear.value,cycleCalendarMonth.value,1);const offset=first.getDay();return Array.from({length:42},(_,i)=>{const d=new Date(first.getFullYear(),first.getMonth(),1-offset+i);let phase='';if(cycle.value.start){const n=Math.max(1,Number(cycle.value.length)||28);const diff=Math.round((new Date(dateISO(d)+'T12:00:00').getTime()-new Date(cycle.value.start+'T12:00:00').getTime())/86400000);if(diff>=0){const step=diff%n;phase=step<Number(cycle.value.period||5)?'period':Math.abs(step-(n-14))<=2?'fertile':''}}return {date:dateISO(d),number:d.getDate(),outside:d.getMonth()!==cycleCalendarMonth.value,phase,today:dateISO(d)===dateISO(new Date())}})})
+  const cycleCalendarDays=computed(()=>cycleCalendar(cycle.value,cycleCalendarMonth.value,cycleCalendarYear.value,dateToday.value))
   const chartWeeks=computed(()=>{const now=new Date();return Array.from({length:4},(_,i)=>{const newest=3-i;const end=new Date(now.getFullYear(),now.getMonth(),now.getDate()-newest*7,23,59,59);const start=new Date(end.getFullYear(),end.getMonth(),end.getDate()-6);const value=statsSessions.value.reduce((total,h)=>{const parts=h.date?.split('/');if(!parts||parts.length!==3)return total;const d=new Date(Number(parts[2]),Number(parts[1])-1,Number(parts[0]));return d>=start&&d<=end?total+totalSetVolume(h.sets):total},0);return {label:'S'+(i+1),value}})})
   const chartMax=computed(()=>Math.max(1,...chartWeeks.value.map(x=>x.value)))
   const profileKey=scopedKey('pega-peso-mulher-profile-v1')
@@ -498,6 +508,8 @@ export function useAppState({accountId,accountName,initialCloud=null,cloudRevisi
     cycle,
     noteDate,
     cycleDay,
+    cycleDayInfo,
+    recordPeriodDay,
     addNote,
     weeklyCardio,
     cycleCalendarMonth,
