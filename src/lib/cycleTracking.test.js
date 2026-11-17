@@ -60,7 +60,7 @@ test('nenhuma fase é calculada antes de registrar início de menstruação',()=
 test('um novo registro real reinicia a contagem das fases naquele dia',()=>{
  const cycle={start:'2026-11-15',periodStarts:['2026-10-15','2026-11-15'],length:28,period:5}
  assert.equal(phaseForCycleDate(cycle,'2026-11-16',today),'menstrual')
- assert.equal(phaseForCycleDate(cycle,'2026-11-10',today),'menstrual')
+ assert.equal(phaseForCycleDate(cycle,'2026-11-13',today),'menstrual')
 })
 test('a data menstruação registrada prevalece sobre fase estimada',()=>{
  const cycle={start:'2026-11-01',periodStarts:['2026-11-01'],length:28,period:5}
