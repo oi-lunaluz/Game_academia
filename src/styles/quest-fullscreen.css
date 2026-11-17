@@ -85,113 +85,109 @@
  .quest-map-hint{display:none}
 }
 
-/* Mapa oficial: cenário de plataformas criado para esta aventura.
-   Cada marcador corresponde à superfície de um salto na arte. */
-.quest-screen .pixel-map-art{
-  background-image:url('/quest-platforms.webp')!important;
-  background-size:100% 100%!important;
-  background-position:center center!important;
-  image-rendering:auto!important;
-}
-.quest-screen .pixel-stage-circle{
-  border-radius:50%;
-  border:3px solid #45372c!important;
-  box-shadow:0 3px 0 #342b27,0 0 0 2px #ffe3a3a3!important;
-  background:#f8dd82!important;
-  color:#614131!important;
-  width:clamp(38px,11vw,49px);
-  height:clamp(38px,11vw,49px);
-}
-.quest-screen .pixel-stage.is-cleared .pixel-stage-circle{
-  background:#a5d778!important;color:#304e31!important;
-}
-.quest-screen .pixel-stage.is-locked .pixel-stage-circle{
-  background:#c8c3a3!important;color:#675b4c!important;
-}
-.quest-screen .pixel-stage-name{
-  border:2px solid #40382a!important;
-  background:#f6eac4f0!important;
-  color:#4e392f!important;
-  font:950 10px/1.1 monospace!important;
-  max-width:92px;
-  border-radius:2px;
-  text-shadow:none!important;
-}
-.quest-screen .pixel-stage.is-active .pixel-stage-circle{
-  animation:questPlatformPulse 1.8s steps(2,end) infinite;
-}
-.quest-screen .pixel-party{
-  transform:translate(-50%,-125%)!important;
-  filter:drop-shadow(2px 3px 0 #2c332855)!important;
-}
-@keyframes questPlatformPulse{
-  50%{transform:scale(1.08);filter:brightness(1.13)}
-}
-@media(prefers-reduced-motion:reduce){
-  .quest-screen .pixel-stage.is-active .pixel-stage-circle{animation:none}
-}
 
-
-/* Castelo enviado pela usuária: cenário completo, SEM background-size:cover.
-   A ilustração quadrada fica inteira num palco responsivo e as cinco plataformas
-   mantêm posições percentuais relativas à própria arte. */
+/*
+ * CASTELO / MAPA V2
+ * A arte tem 1024x1024 e deve ser mostrada sem cortes, filtros ou zoom.
+ * Os marcadores são posicionados em % dentro da imagem quadrada.
+ */
 .quest-screen .quest-full-map{
-  background:linear-gradient(180deg,#70bfe1 0%,#b2d8df 39%,#709e95 72%,#526348 100%)!important;
+  background:linear-gradient(180deg,#87c9e5 0%,#9cd5df 36%,#718e86 75%,#3f5747 100%)!important;
 }
-.quest-screen .quest-full-map::before{
-  content:"";position:absolute;inset:-24px;z-index:0;pointer-events:none;
-  background:url('/quest-castle-platforms.webp') center / cover no-repeat;
-  filter:none;
-  opacity:.13;
+.quest-screen .quest-full-map::before{display:none!important}
+.quest-screen .quest-full-map::after{
+  content:"";position:absolute;inset:0;z-index:11;
+  box-shadow:inset 0 0 0 2px #43514677;pointer-events:none;
 }
-.quest-platform-canvas{
+.quest-visual-v2 .quest-platform-canvas{
   position:absolute;z-index:6;
-  width:min(100%, calc(100dvh - 285px));
-  max-height:none;
-  aspect-ratio:1/1;
-  left:50%;top:52%;
-  transform:translate(-50%,-50%);
-  isolation:isolate;
-  background:#75c1e1;
-  box-shadow:0 5px 15px #19291a55;
+  left:50%;top:52%;transform:translate(-50%,-50%);
+  width:min(100%, calc(100dvh - 290px));
+  max-width:100%;
+  max-height:calc(100% - 168px);
+  aspect-ratio:1 / 1;
+  border:3px solid #314b46;
+  outline:2px solid #a4d9c6;
+  box-shadow:0 6px 0 #2c4138aa,0 14px 25px #243d3745;
+  overflow:visible;
+  background:#77c4e7;
 }
-.quest-platform-image{
-  width:100%;height:100%;display:block;
-  object-fit:contain;image-rendering:auto;
+.quest-visual-v2 .quest-platform-image{
+  display:block;width:100%;height:100%;
+  object-fit:contain!important;
+  image-rendering:auto!important;
+  filter:none!important;
   user-select:none;pointer-events:none;
 }
-.quest-platform-canvas .pixel-stage{
-  z-index:8;width:52px;filter:drop-shadow(1px 2px 0 #171a1f);
+.quest-visual-v2 .pixel-stage{
+  z-index:10;width:42px!important;
+  filter:none!important;
+  background:transparent!important;
 }
-.quest-platform-canvas .pixel-stage-circle{
-  width:38px;height:38px;
-  border:3px solid #392e2b;
-  border-radius:3px!important;
-  font:1000 16px monospace;
-  box-shadow:inset 0 -4px #bf824b,2px 3px #271f20;
+.quest-visual-v2 .pixel-stage-circle{
+  display:grid;place-items:center;
+  width:32px!important;height:32px!important;
+  border:3px solid #4a352b!important;
+  border-radius:8px!important;
+  background:#ffdf85!important;
+  color:#52362b!important;
+  font:1000 14px/1 monospace!important;
+  box-shadow:0 3px 0 #43372a,0 0 0 2px #fff0be!important;
+  text-shadow:none!important;
+  transform:none;
 }
-.quest-platform-canvas .pixel-stage-name{display:none}
-.quest-platform-canvas .pixel-party{
-  z-index:9;width:77px;height:69px;
-  transform:translate(-63%,-91%);
+.quest-visual-v2 .pixel-stage.is-active .pixel-stage-circle{
+  background:#fff0a4!important;
+  color:#593828!important;
+  outline:3px solid #e8b360;
+  outline-offset:3px;
+  animation:questSoftPulse 1.6s ease-in-out infinite;
 }
-.quest-platform-canvas .pixel-party-girl{width:48%;height:100%}
-.quest-platform-canvas .pixel-party-mary{width:52%;height:72%}
-.quest-platform-canvas .pixel-stage:focus-visible{outline-offset:2px}
+.quest-visual-v2 .pixel-stage.is-cleared .pixel-stage-circle{
+  background:#9bd17a!important;color:#2c4d37!important;
+}
+.quest-visual-v2 .pixel-stage.is-locked .pixel-stage-circle{
+  background:#7b91a0!important;
+  color:#f1f0d6!important;
+  border-color:#485466!important;
+}
+.quest-visual-v2 .pixel-stage-name{display:none!important}
+.quest-visual-v2 .pixel-party{
+  z-index:9;width:68px;height:64px;
+  transform:translate(3%,-110%)!important;
+  filter:drop-shadow(0 3px 1px #24362c66)!important;
+  transition:left .25s steps(4,end),top .25s steps(4,end);
+}
+.quest-visual-v2 .pixel-party-girl{width:48%;height:100%}
+.quest-visual-v2 .pixel-party-mary{width:52%;height:73%;margin-left:-9px}
+.quest-visual-v2 .pixel-stage:focus-visible{outline:3px solid #fff1ba;outline-offset:5px}
+.quest-hud{z-index:20}
+.quest-map-navigation{z-index:21}
+.quest-map-navigation span{
+  background:#293c35ed!important;border:2px solid #e4c08a!important;
+  color:#ffe8b3!important;border-radius:5px!important;
+}
+.quest-map-navigation button{
+  background:#f7d48a!important;border-radius:7px!important;
+}
+.quest-map-hint{
+  font-size:10px!important;
+  text-shadow:1px 2px 2px #263a33;
+}
+@keyframes questSoftPulse{
+  50%{box-shadow:0 3px 0 #43372a,0 0 0 5px #ffe9ab99!important}
+}
 @media(max-height:680px){
-  .quest-platform-canvas{top:53%;width:min(100%,calc(100dvh - 280px));max-height:none}
-  .quest-platform-canvas .pixel-party{width:58px;height:58px}
-  .quest-platform-canvas .pixel-stage-circle{width:31px;height:31px;font-size:14px}
+  .quest-visual-v2 .quest-platform-canvas{
+    top:53%;width:min(100%,calc(100dvh - 255px));max-height:calc(100% - 142px)
+  }
+  .quest-visual-v2 .pixel-party{width:53px;height:50px}
+  .quest-visual-v2 .pixel-stage-circle{width:28px!important;height:28px!important;font-size:13px!important}
 }
 @media(min-width:600px){
-  .quest-platform-canvas{width:min(100%,calc(100dvh - 285px));max-height:none}
+  .quest-visual-v2 .quest-platform-canvas{max-width:480px;max-height:calc(100% - 168px)}
 }
-
-/* Sem desfoque decorativo sobre a arte: renderização limpa. */
-.quest-screen .quest-full-map::before{display:none!important}
-.quest-platform-canvas{background:#8bcbea!important;box-shadow:none!important}
-.quest-platform-image{image-rendering:auto!important;filter:none!important;object-fit:contain!important}
-
-/* A versão antiga do webp foi comprimida verticalmente (280 x 498).
-   Restauramos sua proporção quadrada original sem recortar o castelo. */
-.quest-platform-image{object-fit:fill!important;width:100%!important;height:100%!important;filter:contrast(1.06) saturate(1.12)!important}
+@media(prefers-reduced-motion:reduce){
+  .quest-visual-v2 .pixel-stage.is-active .pixel-stage-circle{animation:none}
+  .quest-visual-v2 .pixel-party{transition:none}
+}
